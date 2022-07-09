@@ -13,7 +13,7 @@ import ui.client.ClientPanel
 import ui.clientList.ClientListPanel
 import javax.inject.Inject
 
-class ClientTabPanel @Inject constructor(
+class ClientTabContent @Inject constructor(
     private val clientListPanel: ClientListPanel,
     private val clientPanel: ClientPanel
 ) {
