@@ -39,9 +39,9 @@ class Client(
     }
 
     override fun hashCode(): Int {
-        var result = firstName?.hashCode() ?: 0
-        result = 31 * result + (lastName?.hashCode() ?: 0)
-        result = 31 * result + (patronymic?.hashCode() ?: 0)
+        var result = firstName.hashCode() ?: 0
+        result = 31 * result + (lastName.hashCode() ?: 0)
+        result = 31 * result + (patronymic.hashCode() ?: 0)
         return result
     }
 }
