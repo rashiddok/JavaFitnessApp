@@ -24,7 +24,7 @@ class Main{
 val selectedClient: MutableState<Client?> = mutableStateOf(null)
 val injector = Guice.createInjector()
 val clientTabContent = injector.getInstance(ClientTabContent::class.java).apply { init() }
-val groupTabContent = injector.getInstance(GroupTabContent::class.java)
+val groupTabContent = injector.getInstance(GroupTabContent::class.java).apply { init() }
 
 fun main() = application {
     Window(
