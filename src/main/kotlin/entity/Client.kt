@@ -3,26 +3,26 @@ package entity
 import javax.persistence.*
 
 @Entity
-@Table(name = "clients", uniqueConstraints = [UniqueConstraint(name = "uniqueConstraint", columnNames = [Client.columnNameFirstName, Client.columnNameLastName, Client.columnNamePatronymic])])
+@Table(name = "clients", uniqueConstraints = [UniqueConstraint(name = "uniqueConstraint", columnNames = [Client.COLUMN_NAME_FIRST_NAME, Client.COLUMN_NAME_LAST_NAME, Client.COLUMN_NAME_PATRONYMIC])])
 class Client(
 
-    @Column(name = columnNameFirstName, nullable = false)
-    var firstName: String?,
+    @Column(name = COLUMN_NAME_FIRST_NAME, nullable = false)
+    var firstName: String,
 
-    @Column(name = columnNameLastName, nullable = false)
-    var lastName: String?,
+    @Column(name = COLUMN_NAME_LAST_NAME, nullable = false)
+    var lastName: String,
 
-    @Column(name = columnNamePatronymic, nullable = false)
-    var patronymic: String?
+    @Column(name = COLUMN_NAME_PATRONYMIC, nullable = false)
+    var patronymic: String
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private var id: Int? = null
 
     companion object{
-        const val columnNameFirstName = "first_name"
-        const val columnNameLastName = "last_name"
-        const val columnNamePatronymic = "patronymic"
+        const val COLUMN_NAME_FIRST_NAME = "first_name"
+        const val COLUMN_NAME_LAST_NAME = "last_name"
+        const val COLUMN_NAME_PATRONYMIC = "patronymic"
     }
 
     override fun equals(other: Any?): Boolean {
