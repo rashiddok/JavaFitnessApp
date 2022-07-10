@@ -17,7 +17,7 @@ class Client(
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private var id: Int? = null
+    private val id: Int? = null
 
     companion object{
         const val COLUMN_NAME_FIRST_NAME = "first_name"
