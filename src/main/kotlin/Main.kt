@@ -13,13 +13,26 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.google.inject.Guice
-import entity.Client
+import entity.*
+import org.hibernate.cfg.Configuration
 import ui.ClientTabContent
 import ui.GroupTabContent
 
 class Main{}
 
 fun main() {
+    val sessionFactory = Configuration()
+        .addAnnotatedClass(WorkoutType.EntityView::class.java)
+        .addAnnotatedClass(VisitStatus.EntityView::class.java)
+        .addAnnotatedClass(TransactionType.EntityView::class.java)
+        .addAnnotatedClass(Client::class.java)
+        .addAnnotatedClass(Group::class.java)
+        .addAnnotatedClass(Subscription::class.java)
+        .addAnnotatedClass(Workout::class.java)
+        .addAnnotatedClass(WorkoutVisit::class.java)
+        .addAnnotatedClass(Transaction::class.java)
+        .buildSessionFactory()
+
     val injector = Guice.createInjector()
     val clientTabContent = injector.getInstance(ClientTabContent::class.java).apply { init() }
     val groupTabContent = injector.getInstance(GroupTabContent::class.java).apply { init() }
