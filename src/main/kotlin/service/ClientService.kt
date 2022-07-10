@@ -10,5 +10,5 @@ interface ClientService {
     fun getAll(): List<Client>
     @Throws(IllegalArgumentException::class)
     fun update(client: Client): Client
-    fun remove(client: Client): Boolean
+    fun remove(client: Client)
 }
