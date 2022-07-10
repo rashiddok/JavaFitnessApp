@@ -30,7 +30,7 @@ fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
         title = "Fitness Administration App",
-        state = rememberWindowState(width = 1000.dp, height = 700.dp),
+        state = rememberWindowState(width = 1300.dp, height = 800.dp),
         resizable = false
     ) {
         MaterialTheme {

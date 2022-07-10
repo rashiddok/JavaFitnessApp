@@ -10,16 +10,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import entity.Group
+import ui.group.GroupPanel
 import ui.groupList.GroupListPanel
 import javax.inject.Inject
 
 class GroupTabContent @Inject constructor(
-    private val groupListPanel: GroupListPanel
+    private val groupListPanel: GroupListPanel,
+    private val groupPanel: GroupPanel
 ){
     private val selectedGroup: MutableState<Group?> = mutableStateOf(null)
 
     fun init() {
         groupListPanel.init(selectedGroup)
+        groupPanel.init(selectedGroup)
     }
 
     @Composable
@@ -34,7 +37,7 @@ class GroupTabContent @Inject constructor(
             }
 
             Column(modifier = Modifier.fillMaxHeight().fillMaxWidth()) {
-                Text("Выбранная группа")
+                groupPanel.show()
             }
         }
     }
