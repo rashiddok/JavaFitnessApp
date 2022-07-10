@@ -1,9 +1,14 @@
 package ui.clientList
 
 import entity.Client
+import ui.createClient.NewClientDialog
+import javax.inject.Inject
+import javax.inject.Provider
 import kotlin.streams.toList
 
-class Controller {
+class Controller @Inject constructor(
+    private val newClientDialogProvider: Provider<NewClientDialog>
+) {
     private lateinit var model: Model;
 
     private lateinit var fullClientList: List<Client>
@@ -39,6 +44,9 @@ class Controller {
     }
 
     fun createNewClient() {
-        //Todo
+        model.newClientDialog.value = newClientDialogProvider.get()
+            .apply {
+                init { model.newClientDialog.value = null }
+            }
     }
 }

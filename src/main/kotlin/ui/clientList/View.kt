@@ -37,6 +37,8 @@ class View {
                 Text("СОЗДАТЬ")
             }
         }
+
+        model.newClientDialog.value?.show()
     }
 
     @Composable
