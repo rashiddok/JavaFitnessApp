@@ -1,6 +1,14 @@
 package entity
 
-import javax.persistence.*
+import java.util.Arrays
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.EntityManager
+import javax.persistence.Table
+import javax.persistence.Id
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
+import javax.persistence.AttributeConverter
 
 enum class WorkoutType {
     YOGA,
@@ -18,21 +26,27 @@ enum class WorkoutType {
                 valueOf(entity.description).entity = entity
             }
 
-            if (values().any { !it::entity.isInitialized })
+            if (values().any { !it::entity.isInitialized }) {
+                entityManager.transaction.begin()
+                Arrays.stream(values()).forEach {
+                    it.entity = EntityView(it.toString())
+                    entityManager.persist(it.entity)
+                }
+                entityManager.transaction.commit()
+            }
             // Необходимо синхронизировать Enum с БД. При разработке заносилось вручную
-                throw IllegalStateException("Не удалось проинициализировать поле \"id\" значением из БД")
         }
     }
 
     @Entity
     @Table(name = "workout_types")
-    class EntityView {
+    class EntityView(
+        @Column(name = "description", nullable = false)
+        val description: String
+    ) {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Int = 0
-
-        @Column(name = "description", nullable = false)
-        val description: String = ""
     }
 
     class Converter : AttributeConverter<WorkoutType, Int> {

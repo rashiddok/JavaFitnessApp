@@ -1,5 +1,6 @@
 package entity
 
+import java.util.*
 import javax.persistence.*
 
 enum class VisitStatus {
@@ -18,21 +19,26 @@ enum class VisitStatus {
                 valueOf(entity.description).entity = entity
             }
 
-            if (values().any { !it::entity.isInitialized })
-            // Необходимо синхронизировать Enum с БД. При разработке заносилось вручную
-                throw IllegalStateException("Не удалось проинициализировать поле \"id\" значением из БД")
+            if (values().any { !it::entity.isInitialized }) {
+                entityManager.transaction.begin()
+                Arrays.stream(VisitStatus.values()).forEach {
+                    it.entity = EntityView(it.toString())
+                    entityManager.persist(it.entity)
+                }
+                entityManager.transaction.commit()
+            }
         }
     }
 
     @Entity
     @Table(name = "visit_statuses")
-    class EntityView {
+    class EntityView(
+        @Column(name = "description", nullable = false)
+        val description: String
+    ) {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Int = 0
-
-        @Column(name = "description", nullable = false)
-        val description: String = "";
     }
 
     class Converter : AttributeConverter<VisitStatus, Int> {
