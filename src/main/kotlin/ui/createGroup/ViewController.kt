@@ -1,4 +1,4 @@
-package ui.creategroup
+package ui.createGroup
 
 class ViewController {
     private lateinit var state: State

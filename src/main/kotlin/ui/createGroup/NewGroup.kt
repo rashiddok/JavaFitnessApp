@@ -1,9 +1,9 @@
-package ui.creategroup
+package ui.createGroup
 
 import androidx.compose.runtime.Composable
 import javax.inject.Inject
 
-class CreateGroup @Inject constructor(
+class NewGroup @Inject constructor(
     private val view: View,
     private val state: State,
     private val viewController: ViewController
