@@ -26,7 +26,7 @@ class View {
     private lateinit var viewController: ViewController
     private lateinit var state: State
 
-    var showCreate = remember { mutableStateOf(false) }
+    var showCreate =  mutableStateOf(false)
 
     fun init(state: State, viewController: ViewController) {
         this.state = state
