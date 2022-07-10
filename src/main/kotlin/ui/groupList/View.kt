@@ -36,6 +36,8 @@ class View {
                 Text("СОЗДАТЬ")
             }
         }
+
+        model.newGroupDialog.value?.show()
     }
 
     @Composable

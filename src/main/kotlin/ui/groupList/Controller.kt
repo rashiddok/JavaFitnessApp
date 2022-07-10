@@ -3,15 +3,20 @@ package ui.groupList
 import entity.Group
 import entity.Workout
 import entity.WorkoutType
+import ui.createGroup.NewGroupDialog
 import java.time.LocalDateTime
 import java.time.Month
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.util.Arrays
+import javax.inject.Inject
+import javax.inject.Provider
 import kotlin.random.Random
 import kotlin.streams.toList
 
-class Controller {
+class Controller @Inject constructor(
+    private val newGroupDialogProvider: Provider<NewGroupDialog>
+) {
     private lateinit var model: Model;
     private lateinit var fullGroupList: List<Group>
 
@@ -36,7 +41,10 @@ class Controller {
     }
 
     fun createNewGroup() {
-        //Todo
+        model.newGroupDialog.value = newGroupDialogProvider.get()
+            .apply {
+                init{ model.newGroupDialog.value = null }
+            }
     }
 
     fun getGroupTitle(group: Group): String {

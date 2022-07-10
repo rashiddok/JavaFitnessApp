@@ -1,5 +1,7 @@
 package ui.createGroup
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -14,253 +16,192 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.ComposeDialog
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import entity.WorkoutType
 import java.awt.Dialog
 import java.awt.Dimension
-import java.time.LocalDate
+import java.awt.event.WindowAdapter
+import java.awt.event.WindowEvent
+import java.time.Month
 import java.time.YearMonth
 
 class View {
-    private lateinit var viewController: ViewController
-    private lateinit var state: State
+    private lateinit var controller: Controller
+    private lateinit var model: Model
 
-    var showCreate =  mutableStateOf(false)
-
-    fun init(state: State, viewController: ViewController) {
-        this.state = state
-        this.viewController = viewController
+    fun init(model: Model, controller: Controller) {
+        this.model = model
+        this.controller = controller
     }
 
     @Composable
     fun show() {
         Dialog(
-            visible = showCreate.value,
+            visible = true,
             create = {
                 ComposeDialog(null, Dialog.ModalityType.APPLICATION_MODAL)
-            },
-            dispose = { composeDialog -> composeDialog.dispose() },
-            update = {  }
-        ) {
-            this.window.size = Dimension(500, 500)
-            Column {
-                Row {
-                    Column {
-                        Text("График занятий")
-                    }
-                    Column {
-                        var currentMonth = YearMonth.now().atDay(1)
-                        val lengthOfMonth = currentMonth.lengthOfMonth();
-                        val startMonthDayOfWeek = currentMonth.dayOfWeek.value;
-
-                        drawMonthChangePanel(currentMonth)
-
-                        var drawingDay = 1
-
-                        drawWeekDayPanel()
-                        drawCalendarPanel(drawingDay, lengthOfMonth, startMonthDayOfWeek, currentMonth)
-                    }
-                }
-                Row {
-                    Column {
-                        Text("Тип")
-                    }
-                    var expanded = remember { mutableStateOf(false) }
-                    var selectedText = remember { mutableStateOf("Скопировать") }
-                    Column {
-                        TextField(
-                            value = selectedText.value,
-                            onValueChange = { selectedText.value = it },
-                            modifier = Modifier.width(200.dp),
-                            enabled = false,
-                            trailingIcon = {
-                                Icon(
-                                    Icons.Filled.ArrowDropDown, "contentDescription",
-                                    Modifier.clickable { expanded.value = !expanded.value })
-                            },
-                            singleLine = true
-                        )
-                        DropdownMenu(
-                            expanded = expanded.value,
-                            onDismissRequest = { expanded.value = false },
-
-                            ) {
-                            Text("Скопировать", fontSize = 15.sp, modifier = Modifier.padding(10.dp).clickable(onClick = {
-                                selectedText.value = "Скопировать";
-                                expanded.value = !expanded.value
-                            }))
-                            Text("Вставить", fontSize = 15.sp, modifier = Modifier.padding(10.dp).clickable(onClick = {
-                                selectedText.value = "Вставить";
-                                expanded.value = !expanded.value
-                            }))
-                            Text("Настройки", fontSize = 15.sp, modifier = Modifier.padding(10.dp).clickable(onClick = {
-                                selectedText.value = "Настройки";
-                                expanded.value = !expanded.value
-                            }))
-                        }
-                    }
-                }
-                Row {
-                    Column {
-                        Text("Стоимость занятия")
-                    }
-                    Column {
-                        val textState = remember { mutableStateOf("3467") }
-                        TextField(
-                            value = textState.value,
-                            onValueChange = {
-                                val pattern = Regex("[1-9]+\\d*")
-                                if (pattern.matches(it))
-                                    textState.value = it
+                    .apply {
+                        size = Dimension(600, 600)
+                        isResizable = false
+                        addWindowListener(object : WindowAdapter() {
+                            override fun windowClosing(e: WindowEvent?) {
+                                model.closeCallback.run()
                             }
+                        })
+                    }
+            },
+            dispose = ComposeDialog::dispose,
+            update = {}
+        ) {
+            Column (
+                modifier = Modifier.padding(20.dp)
+            ) {
+                Row (
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.height(350.dp)
+                ) {
+                    labelColumn("График занятий")
+                    Column {
+                        drawMonthChangePanel()
+                        drawWeekDayPanel()
+                        drawCalendarPanel()
+                    }
+                }
+
+                Row (
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    labelColumn("Тип занятий")
+                    Column {
+                        workoutTypeCombobox()
+                    }
+                }
+
+                Row (
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    labelColumn("Стоимость занятия")
+                    Column {
+                        TextField(
+                            value = model.workoutPrice.value,
+                            onValueChange = controller::setPrice
                         )
                     }
                 }
-                Button(onClick = { showCreate.value = false }) {
-                    Text("OK")
+
+                Row (
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxWidth().padding(top = 20.dp)
+                ) {
+                    Button(
+                        onClick = controller::createNewGroup,
+                        shape = CircleShape
+                    ) {
+                        Text("СОЗДАТЬ")
+                    }
                 }
             }
         }
     }
 
     @Composable
-    private fun drawCalendarPanel(
-        startDay: Int,
-        lengthOfMonth: Int,
-        startMonthDayOfWeek: Int,
-        currentMonth: LocalDate
-    ) {
-        var drawingDay = startDay
-        var drawingMonth = currentMonth
-        while (drawingDay <= lengthOfMonth) {
-            Row(modifier = Modifier.height(50.dp)) {
-                if (drawingDay == 1 && startMonthDayOfWeek != 1) {
-                    for (i in 1..startMonthDayOfWeek) {
+    fun labelColumn(label: String) {
+        Column (
+            horizontalAlignment = Alignment.Start,
+            modifier = Modifier.width(200.dp)
+        ) {
+            Text(label)
+        }
+    }
+
+    @Composable
+    private fun drawCalendarPanel() {
+        val currentMonth = model.selectedMonth.value.atDay(1)
+        val lengthOfMonth = currentMonth.lengthOfMonth();
+        val startMonthDayOfWeek = currentMonth.dayOfWeek.value;
+
+        var counter = 1
+        var drawingDay = currentMonth
+        while (counter <= lengthOfMonth) {
+            Row(
+                modifier = Modifier.height(50.dp)
+            ) {
+                if (counter == 1 && startMonthDayOfWeek != 1) {
+                    for (i in 1 until startMonthDayOfWeek) {
                         Column(modifier = Modifier.width(50.dp)) {
-                            if (i == startMonthDayOfWeek) {
-                                OutlinedButton(
-                                    onClick = {},
-                                    shape = CircleShape,
-                                    modifier = Modifier.size(40.dp),
-                                    contentPadding = PaddingValues(0.dp)
-                                ) {
-                                    Text(drawingDay.toString())
-                                }
-                            } else {
-                                Text("")
-                            }
+                            Text("")
                         }
                     }
-                    drawingDay++
-                    drawingMonth = drawingMonth.plusDays(1)
                 }
 
-
-                if (drawingMonth.dayOfWeek.value == 1 && drawingDay <= lengthOfMonth) {
-                    Column(modifier = Modifier.width(50.dp)) {
-                        OutlinedButton(
-                            onClick = {},
-                            shape = CircleShape,
-                            modifier = Modifier.size(40.dp),
-                            contentPadding = PaddingValues(0.dp)
-                        ) {
-                            Text(drawingDay.toString())
-                        }
-                    }
-                    drawingDay++
-                    drawingMonth = drawingMonth.plusDays(1)
+                if (drawingDay.dayOfWeek.value == 1 && counter <= lengthOfMonth) {
+                    day(counter)
+                    counter++
+                    drawingDay = drawingDay.plusDays(1)
                 }
 
-                if (drawingMonth.dayOfWeek.value == 2 && drawingDay <= lengthOfMonth) {
-                    Column(modifier = Modifier.width(50.dp)) {
-                        OutlinedButton(
-                            onClick = {},
-                            shape = CircleShape,
-                            modifier = Modifier.size(40.dp),
-                            contentPadding = PaddingValues(0.dp)
-                        ) {
-                            Text(drawingDay.toString())
-                        }
-                    }
-                    drawingDay++
-                    drawingMonth = drawingMonth.plusDays(1)
+                if (drawingDay.dayOfWeek.value == 2 && counter <= lengthOfMonth) {
+                    day(counter)
+                    counter++
+                    drawingDay = drawingDay.plusDays(1)
                 }
 
-                if (drawingMonth.dayOfWeek.value == 3 && drawingDay <= lengthOfMonth) {
-                    Column(modifier = Modifier.width(50.dp)) {
-                        OutlinedButton(
-                            onClick = {},
-                            shape = CircleShape,
-                            modifier = Modifier.size(40.dp),
-                            contentPadding = PaddingValues(0.dp)
-                        ) {
-                            Text(drawingDay.toString())
-                        }
-                    }
-                    drawingDay++
-                    drawingMonth = drawingMonth.plusDays(1)
+                if (drawingDay.dayOfWeek.value == 3 && counter <= lengthOfMonth) {
+                    day(counter)
+                    counter++
+                    drawingDay = drawingDay.plusDays(1)
                 }
 
-                if (drawingMonth.dayOfWeek.value == 4 && drawingDay <= lengthOfMonth) {
-                    Column(modifier = Modifier.width(50.dp)) {
-                        OutlinedButton(
-                            onClick = {},
-                            shape = CircleShape,
-                            modifier = Modifier.size(40.dp),
-                            contentPadding = PaddingValues(0.dp)
-                        ) {
-                            Text(drawingDay.toString())
-                        }
-                    }
-                    drawingDay++
-                    drawingMonth = drawingMonth.plusDays(1)
+                if (drawingDay.dayOfWeek.value == 4 && counter <= lengthOfMonth) {
+                    day(counter)
+                    counter++
+                    drawingDay = drawingDay.plusDays(1)
                 }
 
-                if (drawingMonth.dayOfWeek.value == 5 && drawingDay <= lengthOfMonth) {
-                    Column(modifier = Modifier.width(50.dp)) {
-                        OutlinedButton(
-                            onClick = {},
-                            shape = CircleShape,
-                            modifier = Modifier.size(40.dp),
-                            contentPadding = PaddingValues(0.dp)
-                        ) {
-                            Text(drawingDay.toString())
-                        }
-                    }
-                    drawingDay++
-                    drawingMonth = drawingMonth.plusDays(1)
+                if (drawingDay.dayOfWeek.value == 5 && counter <= lengthOfMonth) {
+                    day(counter)
+                    counter++
+                    drawingDay = drawingDay.plusDays(1)
                 }
 
-                if (drawingMonth.dayOfWeek.value == 6 && drawingDay <= lengthOfMonth) {
-                    Column(modifier = Modifier.width(50.dp)) {
-                        OutlinedButton(
-                            onClick = {},
-                            shape = CircleShape,
-                            modifier = Modifier.size(40.dp),
-                            contentPadding = PaddingValues(0.dp)
-                        ) {
-                            Text(drawingDay.toString())
-                        }
-                    }
-                    drawingDay++
-                    drawingMonth = drawingMonth.plusDays(1)
+                if (drawingDay.dayOfWeek.value == 6 && counter <= lengthOfMonth) {
+                    day(counter)
+                    counter++
+                    drawingDay = drawingDay.plusDays(1)
                 }
 
-                if (drawingMonth.dayOfWeek.value == 7 && drawingDay <= lengthOfMonth) {
-                    Column(modifier = Modifier.width(50.dp)) {
-                        OutlinedButton(
-                            onClick = {},
-                            shape = CircleShape,
-                            modifier = Modifier.size(40.dp),
-                            contentPadding = PaddingValues(0.dp)
-                        ) {
-                            Text(drawingDay.toString())
-                        }
-                    }
-                    drawingDay++
-                    drawingMonth = drawingMonth.plusDays(1)
+                if (drawingDay.dayOfWeek.value == 7 && counter <= lengthOfMonth) {
+                    day(counter)
+                    counter++
+                    drawingDay = drawingDay.plusDays(1)
                 }
+            }
+        }
+    }
+
+    @Composable
+    private fun day(day: Int) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.width(50.dp)
+        ) {
+            OutlinedButton(
+                onClick = { controller.updateDay(day) },
+                shape = CircleShape,
+                modifier = Modifier.size(40.dp),
+                contentPadding = PaddingValues(0.dp),
+                border = if (model.selectedDates.contains(day))
+                    BorderStroke(1.dp, MaterialTheme.colors.primary) else BorderStroke(1.dp, Color.Transparent),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    backgroundColor = Color.Transparent,
+                    contentColor = Color.Black
+                )
+            ) {
+                Text(day.toString())
             }
         }
     }
@@ -293,35 +234,96 @@ class View {
     }
 
     @Composable
-    private fun drawMonthChangePanel(currentMonth: LocalDate) {
-        Row (Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-            Column (horizontalAlignment = Alignment.Start){
-                OutlinedButton(
-                    onClick = {},
-                    shape = CircleShape,
-                    modifier = Modifier.size(20.dp),
-                    contentPadding = PaddingValues(0.dp)
-                ) {
-                    Icon(Icons.Default.KeyboardArrowLeft, "",
-                        Modifier.clickable { })
-                }
+    private fun drawMonthChangePanel() {
+        Row (
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column {
+                Icon(Icons.Filled.KeyboardArrowLeft, null, tint = MaterialTheme.colors.primary, modifier = Modifier.size(30.dp)
+                    .clickable { controller.setPrevMonth() })
             }
 
-            Column(Modifier.padding(start = 100.dp, end = 100.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(currentMonth.month.toString())
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.width(250.dp)
+            ) {
+                Text(yearMonthString(model.selectedMonth.value))
             }
 
-            Column (horizontalAlignment = Alignment.End){
-                OutlinedButton(
-                    onClick = {},
-                    shape = CircleShape,
-                    modifier = Modifier.size(20.dp),
-                    contentPadding = PaddingValues(0.dp)
+            Column {
+                Icon(Icons.Filled.KeyboardArrowRight, null, tint = MaterialTheme.colors.primary, modifier = Modifier.size(30.dp)
+                    .clickable { controller.setNextMonth() })
+            }
+        }
+    }
+
+    @Composable
+    fun workoutTypeCombobox() {
+        val expanded = remember { mutableStateOf(false) }
+
+        TextField(
+            value = workoutTypeString(model.selectedWorkoutType.value),
+            onValueChange = {},
+            modifier = Modifier.width(200.dp),
+            enabled = false,
+            singleLine = true,
+            trailingIcon = {
+                Icon(
+                    Icons.Filled.ArrowDropDown, null,
+                    Modifier.clickable { expanded.value = !expanded.value }
+                )
+            }
+        )
+
+        DropdownMenu(
+            expanded = expanded.value,
+            onDismissRequest = { expanded.value = false },
+
+            ) {
+            WorkoutType.values().forEach { workoutType ->
+                DropdownMenuItem(
+                    onClick = {
+                        controller::setWorkoutType
+                        expanded.value = false
+                    },
+                    modifier = Modifier
+                        .background( if (model.selectedWorkoutType.value == workoutType)
+                            MaterialTheme.colors.primary else  Color.Transparent
+                        )
                 ) {
-                    Icon(Icons.Filled.KeyboardArrowRight, "",
-                        Modifier.clickable { })
+                    Text(
+                        text = workoutTypeString(workoutType),
+                        color = if (model.selectedWorkoutType.value == workoutType)
+                            Color.White else  Color.Black
+                    )
                 }
             }
         }
+    }
+}
+
+private fun yearMonthString(yearMonth: YearMonth): String {
+    return when (yearMonth.month!!) {
+        Month.JANUARY -> "Январь " + yearMonth.year
+        Month.FEBRUARY -> "Февраль " + yearMonth.year
+        Month.MARCH -> "Март " + yearMonth.year
+        Month.APRIL -> "Апрель " + yearMonth.year
+        Month.MAY -> "Май " + yearMonth.year
+        Month.JUNE -> "Июнь " + yearMonth.year
+        Month.JULY -> "Июль " + yearMonth.year
+        Month.AUGUST -> "Август " + yearMonth.year
+        Month.SEPTEMBER -> "Сентябрь " + yearMonth.year
+        Month.OCTOBER -> "Октябрь " + yearMonth.year
+        Month.NOVEMBER -> "Ноябрь " + yearMonth.year
+        Month.DECEMBER -> "Декабрь " + yearMonth.year
+    }
+}
+
+private fun workoutTypeString(workoutType: WorkoutType): String {
+    return when (workoutType){
+        WorkoutType.AEROBICS -> "Аэробика"
+        WorkoutType.PILATES -> "Пилатес"
+        WorkoutType.YOGA -> "Йога"
     }
 }
