@@ -66,6 +66,8 @@ class View {
                 Text("ДОБАВИТЬ В ГРУППУ")
             }
         }
+
+        model.rebalanceDialog.value?.show()
     }
 
     @Composable

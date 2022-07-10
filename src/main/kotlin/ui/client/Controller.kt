@@ -1,15 +1,20 @@
 package ui.client
 
 import service.ClientService
+import service.TransactionService
+import ui.balance.RebalanceDialog
 import java.time.Month
 import java.time.Year
 import java.time.YearMonth
 import java.util.Arrays
 import java.util.stream.Collectors
 import javax.inject.Inject
+import javax.inject.Provider
 
 class Controller @Inject constructor(
-    private val clientService: ClientService
+    private val clientService: ClientService,
+    private val transactionService: TransactionService,
+    private val rebalanceDialogProvider: Provider<RebalanceDialog>
 ) {
     private lateinit var model: Model
 
@@ -55,7 +60,16 @@ class Controller @Inject constructor(
     }
 
     fun showEditClientBalanceDialog() {
-        // TODO
+        model.rebalanceDialog.value = rebalanceDialogProvider.get()
+            .apply {
+                init(
+                    model.selectedClient.value!!,
+                    {
+                         model.balance.value = transactionService.getBalance(model.selectedClient.value!!)
+                        model.rebalanceDialog.value = null
+                    }
+                )
+            }
     }
 
     fun showAddClientToGroupDialog() {
