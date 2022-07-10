@@ -17,61 +17,50 @@ import entity.Client
 import ui.ClientTabContent
 import ui.GroupTabContent
 
-class Main{
+class Main{}
 
-}
+fun main() {
+    val injector = Guice.createInjector()
+    val clientTabContent = injector.getInstance(ClientTabContent::class.java).apply { init() }
+    val groupTabContent = injector.getInstance(GroupTabContent::class.java).apply { init() }
 
-val selectedClient: MutableState<Client?> = mutableStateOf(null)
-val injector = Guice.createInjector()
-val clientTabContent = injector.getInstance(ClientTabContent::class.java).apply { init() }
-val groupTabContent = injector.getInstance(GroupTabContent::class.java).apply { init() }
+    application {
+        Window(
+            onCloseRequest = ::exitApplication,
+            title = "Fitness Administration App",
+            state = rememberWindowState(width = 1300.dp, height = 800.dp),
+            resizable = false
+        ) {
+            MaterialTheme {
+                val selectedTabIndex = remember { mutableStateOf(0) }
 
-fun main() = application {
-    Window(
-        onCloseRequest = ::exitApplication,
-        title = "Fitness Administration App",
-        state = rememberWindowState(width = 1300.dp, height = 800.dp),
-        resizable = false
-    ) {
-        MaterialTheme {
-            val selectedTabIndex = remember { mutableStateOf(0) }
+                Column {
+                    Row {
+                        TabRow(
+                            selectedTabIndex = selectedTabIndex.value
+                        ) {
+                            Tab(
+                                selected = selectedTabIndex.value == 0,
+                                onClick = { selectedTabIndex.value = 0 },
+                                text = { Text("Группы") }
+                            )
 
-            Column {
-                Row {
-                    tabBar(selectedTabIndex)
-                }
+                            Tab(
+                                selected = selectedTabIndex.value == 1,
+                                onClick = { selectedTabIndex.value = 1 },
+                                text = { Text("Клиенты")}
+                            )
+                        }
+                    }
 
-                Row {
-                    tadContent(selectedTabIndex)
+                    Row {
+                        when (selectedTabIndex.value) {
+                            0 -> groupTabContent.show()
+                            1 -> clientTabContent.show()
+                        }
+                    }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun tabBar(selectedTabIndex: MutableState<Int>) {
-    TabRow(
-        selectedTabIndex = selectedTabIndex.value
-    ) {
-        Tab(
-            selected = selectedTabIndex.value == 0,
-            onClick = { selectedTabIndex.value = 0 },
-            text = { Text("Группы") }
-        )
-
-        Tab(
-            selected = selectedTabIndex.value == 1,
-            onClick = { selectedTabIndex.value = 1 },
-            text = { Text("Клиенты")}
-        )
-    }
-}
-
-@Composable
-fun tadContent(selectedTabIndex: MutableState<Int>) {
-    when (selectedTabIndex.value) {
-        0 -> groupTabContent.show()
-        1 -> clientTabContent.show()
     }
 }
