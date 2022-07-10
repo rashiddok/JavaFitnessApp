@@ -1,12 +1,16 @@
 package ui.client
 
+import service.ClientService
 import java.time.Month
 import java.time.Year
 import java.time.YearMonth
 import java.util.Arrays
 import java.util.stream.Collectors
+import javax.inject.Inject
 
-class Controller {
+class Controller @Inject constructor(
+    private val clientService: ClientService
+) {
     private lateinit var model: Model
 
     fun init(model: Model) {
@@ -29,17 +33,17 @@ class Controller {
 
     fun setFirstName(firstName: String) {
         model.firstName.value = firstName
-        model.selectedClient.value!!.firstName = firstName
+        model.unsavedFirstName.value = model.selectedClient.value!!.firstName != model.firstName.value
     }
 
     fun setLastName(lastName: String) {
         model.lastName.value = lastName
-        model.selectedClient.value!!.lastName = lastName
+        model.unsavedLastName.value = model.selectedClient.value!!.lastName != model.lastName.value
     }
 
     fun setPatronymic(patronymic: String) {
         model.patronymic.value = patronymic
-        model.selectedClient.value!!.patronymic = patronymic
+        model.unsavedPatronymic.value = model.selectedClient.value!!.patronymic != model.patronymic.value
     }
 
     fun setWorkoutPeriod(period: YearMonth) {
@@ -56,6 +60,18 @@ class Controller {
 
     fun showAddClientToGroupDialog() {
         // TODO
+    }
+
+    fun updateClient() {
+        model.selectedClient.value!!.patronymic = model.patronymic.value
+        model.selectedClient.value!!.lastName = model.lastName.value
+        model.selectedClient.value!!.firstName = model.firstName.value
+
+        clientService.update(model.selectedClient.value!!)
+
+        model.unsavedLastName.value = false
+        model.unsavedFirstName.value = false
+        model.unsavedPatronymic.value = false
     }
 }
 

@@ -14,6 +14,10 @@ class Model {
     val lastName = mutableStateOf("")
     val patronymic = mutableStateOf("")
 
+    val unsavedFirstName = mutableStateOf(false)
+    val unsavedLastName = mutableStateOf(false)
+    val unsavedPatronymic = mutableStateOf(false)
+
     val balance = mutableStateOf(0)
 
     val monthList: MutableState<List<YearMonth>> = mutableStateOf(Collections.emptyList())

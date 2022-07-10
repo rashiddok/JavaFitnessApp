@@ -13,12 +13,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.ComposeDialog
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import service.ClientService
 import java.awt.Dialog
 import java.awt.Dimension
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
+import javax.inject.Inject
 
-class NewClientDialog {
+class NewClientDialog @Inject constructor(
+    private val clientService: ClientService
+) {
     private lateinit var closeCallback: Runnable
 
     private val firstName = mutableStateOf("")
@@ -51,8 +55,8 @@ class NewClientDialog {
             Column (
                 modifier = Modifier.padding(10.dp)
             ) {
-                fioRow("Имя", firstName)
                 fioRow("Фамилия", lastName)
+                fioRow("Имя", firstName)
                 fioRow("Отчество", patronymic)
                 Row (
                     horizontalArrangement = Arrangement.Center,
@@ -60,7 +64,8 @@ class NewClientDialog {
                 ) {
                     Button(
                         onClick = {
-                            // TODO save client
+                            clientService.create(firstName.value, lastName.value, patronymic.value)
+
                             // Композ ругается, если мы самостоятельно вызываем dispose() на диалоге, он хочет это делать сам.
                             // Поэтому меняем значение MutableState и композ сам все пересоберет.
                             closeCallback.run()

@@ -8,6 +8,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -43,9 +44,9 @@ class View {
         Row(modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.fillMaxHeight(0.9f)) {
                 diver("Личные данные")
-                fioRow("Имя", model.firstName, controller::setFirstName )
-                fioRow("Фамилия", model.lastName, controller::setLastName )
-                fioRow("Отчество", model.patronymic, controller::setPatronymic )
+                fioRow("Фамилия", model.lastName, controller::setLastName, model.unsavedLastName )
+                fioRow("Имя", model.firstName, controller::setFirstName, model.unsavedFirstName )
+                fioRow("Отчество", model.patronymic, controller::setPatronymic, model.unsavedPatronymic )
                 diver("Баланс")
                 balanceRow()
                 diver("Посещения")
@@ -78,7 +79,7 @@ class View {
     }
 
     @Composable
-    private fun fioRow(label: String, inputState: MutableState<String>, setter: (String) -> Unit) {
+    private fun fioRow(label: String, inputState: MutableState<String>, setter: (String) -> Unit, unsavedState: MutableState<Boolean>) {
         remember { inputState }
 
         Row (horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically){
@@ -95,10 +96,12 @@ class View {
             }
 
             Column {
-                Button(modifier = Modifier.scale(0.8f), shape = CircleShape,
-                    onClick = {}
+                Button(enabled = unsavedState.value, modifier = Modifier.scale(0.8f), shape = CircleShape,
+                    onClick = {
+                        controller.updateClient()
+                    }
                 ) {
-                    Icon(Icons.Filled.Edit, null )
+                    Icon(Icons.Filled.Send, null )
                 }
             }
         }

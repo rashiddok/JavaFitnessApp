@@ -1,13 +1,15 @@
 package ui.clientList
 
 import entity.Client
+import service.ClientService
 import ui.createClient.NewClientDialog
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlin.streams.toList
 
 class Controller @Inject constructor(
-    private val newClientDialogProvider: Provider<NewClientDialog>
+    private val newClientDialogProvider: Provider<NewClientDialog>,
+    private val clientService: ClientService
 ) {
     private lateinit var model: Model;
 
@@ -16,14 +18,7 @@ class Controller @Inject constructor(
     fun init(model: Model) {
         this.model = model
 
-        fullClientList = listOf(
-            Client("Dima", "Dima", "Dima"),
-            Client("Vlad", "Vlad", "Vlad"),
-            Client("Mia", "Mia", "Mia"),
-            Client("Oly", "Oly", "Oly"),
-            Client("Paul", "Paul", "Paul"),
-            Client("Angelina", "Angelina", "Angelina")
-        )
+        fullClientList = clientService.getAll()
 
         model.clientList.value = fullClientList;
     }
@@ -46,7 +41,11 @@ class Controller @Inject constructor(
     fun createNewClient() {
         model.newClientDialog.value = newClientDialogProvider.get()
             .apply {
-                init { model.newClientDialog.value = null }
+                init {
+                    model.newClientDialog.value = null
+                    fullClientList = clientService.getAll()
+                    find(model.searchPattern.value)
+                }
             }
     }
 }
