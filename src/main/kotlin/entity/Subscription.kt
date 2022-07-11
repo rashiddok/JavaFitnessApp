@@ -17,8 +17,8 @@ class Subscription (
     @Column(name = "order_count", nullable = false)
     val orderCount: Int,
 
-    @Column(name = "compensation", nullable = false)
-    val compensation: Int,
+    @Column(name = "compensation_rate", nullable = false)
+    val compensationRate: Int,
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

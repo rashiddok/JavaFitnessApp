@@ -68,6 +68,8 @@ class View {
         }
 
         model.rebalanceDialog.value?.show()
+        
+        model.subscriptionDialog.value?.show()
     }
 
     @Composable

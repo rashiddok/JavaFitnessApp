@@ -3,6 +3,7 @@ package ui.client
 import service.ClientService
 import service.TransactionService
 import ui.balance.RebalanceDialog
+import ui.subscription.SubscriptionDialog
 import java.time.Month
 import java.time.Year
 import java.time.YearMonth
@@ -14,7 +15,8 @@ import javax.inject.Provider
 class Controller @Inject constructor(
     private val clientService: ClientService,
     private val transactionService: TransactionService,
-    private val rebalanceDialogProvider: Provider<RebalanceDialog>
+    private val rebalanceDialogProvider: Provider<RebalanceDialog>,
+    private val subscriptionDialogProvider: Provider<SubscriptionDialog>
 ) {
     private lateinit var model: Model
 
@@ -65,7 +67,7 @@ class Controller @Inject constructor(
                 init(
                     model.selectedClient.value!!,
                     {
-                         model.balance.value = transactionService.getBalance(model.selectedClient.value!!)
+                        model.balance.value = transactionService.getBalance(model.selectedClient.value!!)
                         model.rebalanceDialog.value = null
                     }
                 )
@@ -73,7 +75,13 @@ class Controller @Inject constructor(
     }
 
     fun showAddClientToGroupDialog() {
-        // TODO
+        model.subscriptionDialog.value = subscriptionDialogProvider.get()
+            .apply {
+                init(
+                    { model.subscriptionDialog.value = null },
+                    model.selectedClient.value!!
+                )
+            }
     }
 
     fun updateClient() {

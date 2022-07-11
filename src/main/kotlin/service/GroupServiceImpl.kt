@@ -1,14 +1,12 @@
 package service
 
 import dao.HibernateSessionFactory
-import entity.Group
-import entity.Workout
-import entity.WorkoutType
-import entity.WorkoutVisit
+import entity.*
 import java.time.LocalDateTime
 import java.time.YearMonth
 import javax.inject.Inject
 import javax.persistence.EntityManager
+import kotlin.streams.toList
 
 class GroupServiceImpl @Inject constructor(
     private val hibernateFactory: HibernateSessionFactory
@@ -48,6 +46,16 @@ class GroupServiceImpl @Inject constructor(
 
     override fun close(group: Group): Group {
         TODO("Not yet implemented")
+    }
+
+    override fun getClientList(group: Group): List<Client> {
+        val entityManager = hibernateFactory.sessionFactory.createEntityManager()
+        val criteria = entityManager.criteriaBuilder.createQuery(Subscription::class.java)
+        criteria.from(Subscription::class.java)
+        return entityManager.createQuery(criteria).resultList.stream()
+            .filter{ subscription -> subscription.group == group }
+            .map(Subscription::client)
+            .toList()
     }
 
     private fun beginTransaction() : EntityManager {

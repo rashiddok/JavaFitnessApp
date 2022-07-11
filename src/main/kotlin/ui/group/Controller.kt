@@ -1,8 +1,13 @@
 package ui.group
 
 import entity.*
+import ui.subscription.SubscriptionDialog
+import javax.inject.Inject
+import javax.inject.Provider
 
-class Controller {
+class Controller @Inject constructor(
+    private val subscriptionDialogProvider: Provider<SubscriptionDialog>
+){
     lateinit var model: Model
 
     fun init(model: Model) {
@@ -18,11 +23,23 @@ class Controller {
     }
 
     fun showAddClientToGroupDialog() {
-        // TODO
+        model.subscriptionDialog.value = subscriptionDialogProvider.get()
+            .apply {
+                init(
+                    closeCallback = { model.subscriptionDialog.value = null },
+                    group = model.selectedGroup.value!!
+                )
+            }
     }
 
     fun showRemoveClientFromGroupDialog() {
-        // TODO
+        model.subscriptionDialog.value = subscriptionDialogProvider.get()
+            .apply {
+                init(
+                    closeCallback = { model.subscriptionDialog.value = null },
+                    group = model.selectedGroup.value!!
+                )
+            }
     }
 
     fun getVisitStatus(workout: Workout, client: Client): VisitStatus? {

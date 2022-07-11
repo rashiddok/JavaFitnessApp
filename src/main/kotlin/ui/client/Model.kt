@@ -5,6 +5,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import entity.Client
 import ui.balance.RebalanceDialog
+import ui.subscription.SubscriptionDialog
 import java.time.YearMonth
 import java.util.Collections
 
@@ -12,6 +13,7 @@ class Model {
     lateinit var selectedClient: State<Client?>
 
     var rebalanceDialog = mutableStateOf<RebalanceDialog?>(null)
+    var subscriptionDialog = mutableStateOf<SubscriptionDialog?>(null)
 
     val firstName = mutableStateOf("")
     val lastName = mutableStateOf("")

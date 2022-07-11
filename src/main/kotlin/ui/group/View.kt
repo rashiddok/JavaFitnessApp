@@ -78,6 +78,8 @@ class View {
                 buttons()
             }
         }
+
+        model.subscriptionDialog.value?.show()
     }
 
     @Composable
