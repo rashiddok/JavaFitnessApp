@@ -58,6 +58,23 @@ class GroupServiceImpl @Inject constructor(
             .toList()
     }
 
+    override fun getVisitList(group: Group, client: Client): List<WorkoutVisit> {
+        val workouts = group.workout
+
+        val entityManager = hibernateFactory.sessionFactory.createEntityManager();
+        val query = entityManager.createQuery(
+            "select v from WorkoutVisit v where v.client = :client",
+            WorkoutVisit::class.java
+        )
+        query.setParameter("client", client)
+        val visits = query.resultStream
+            .filter { workouts.contains(it.workout) }
+            .toList()
+
+        entityManager.close()
+        return visits
+    }
+
     private fun beginTransaction() : EntityManager {
         val entityManager = hibernateFactory.sessionFactory.createEntityManager();
         entityManager.transaction.begin()

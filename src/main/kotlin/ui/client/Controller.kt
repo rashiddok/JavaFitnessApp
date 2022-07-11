@@ -1,20 +1,22 @@
 package ui.client
 
+import entity.VisitStatus
 import service.ClientService
+import service.GroupService
+import service.SubscriptionService
 import service.TransactionService
 import ui.balance.RebalanceDialog
 import ui.subscription.SubscriptionDialog
-import java.time.Month
-import java.time.Year
 import java.time.YearMonth
-import java.util.Arrays
-import java.util.stream.Collectors
 import javax.inject.Inject
 import javax.inject.Provider
+import kotlin.streams.toList
 
 class Controller @Inject constructor(
     private val clientService: ClientService,
     private val transactionService: TransactionService,
+    private val subscriptionService: SubscriptionService,
+    private val groupService: GroupService,
     private val rebalanceDialogProvider: Provider<RebalanceDialog>,
     private val subscriptionDialogProvider: Provider<SubscriptionDialog>
 ) {
@@ -22,7 +24,6 @@ class Controller @Inject constructor(
 
     fun init(model: Model) {
         this.model = model
-        model.monthList.value = getMonthList();
     }
 
     fun updateModel() {
@@ -30,8 +31,9 @@ class Controller @Inject constructor(
         model.lastName.value = model.selectedClient.value!!.lastName
         model.patronymic.value = model.selectedClient.value!!.patronymic
 
-        model.balance.value = transactionService.getBalance(model.selectedClient.value!!)
+        updateBalance()
 
+        updateMonthList()
         model.selectedMonth.value = null
         model.workoutOrderedCount.value = 0;
         model.workoutVisitedCount.value = 0;
@@ -55,21 +57,24 @@ class Controller @Inject constructor(
 
     fun setWorkoutPeriod(period: YearMonth) {
         model.selectedMonth.value = period
-        // TODO
-        model.workoutOrderedCount.value = period.lengthOfMonth();
-        model.workoutVisitedCount.value = 0;
-        model.workoutCanceledCount.value = 0;
+
+        val subscription = subscriptionService.get(model.selectedClient.value!!, period)[0]
+        val visitList = groupService.getVisitList(subscription.group, subscription.client)
+
+        model.workoutOrderedCount.value = subscription.orderCount
+        model.workoutVisitedCount.value = visitList.filter { it.visitStatus == VisitStatus.VISITED }.size
+        model.workoutCanceledCount.value = visitList.filter { it.visitStatus == VisitStatus.CANCELED }.size;
     }
 
     fun showEditClientBalanceDialog() {
         model.rebalanceDialog.value = rebalanceDialogProvider.get()
             .apply {
                 init(
-                    model.selectedClient.value!!,
-                    {
-                        model.balance.value = transactionService.getBalance(model.selectedClient.value!!)
+                    client = model.selectedClient.value!!,
+                    closeCallback = {
                         model.rebalanceDialog.value = null
-                    }
+                        updateBalance()
+                    },
                 )
             }
     }
@@ -78,8 +83,12 @@ class Controller @Inject constructor(
         model.subscriptionDialog.value = subscriptionDialogProvider.get()
             .apply {
                 init(
-                    { model.subscriptionDialog.value = null },
-                    model.selectedClient.value!!
+                    closeCallback = {
+                        model.subscriptionDialog.value = null
+                        updateBalance()
+                        updateMonthList()
+                    },
+                    client = model.selectedClient.value!!
                 )
             }
     }
@@ -95,10 +104,16 @@ class Controller @Inject constructor(
         model.unsavedFirstName.value = false
         model.unsavedPatronymic.value = false
     }
-}
 
-private fun getMonthList(): List<YearMonth> {
-    return Arrays.stream(Month.values())
-        .map { YearMonth.of( Year.now().value, it) }
-        .collect(Collectors.toList())
+    private fun updateBalance() {
+        model.balance.value = transactionService.getBalance(model.selectedClient.value!!)
+    }
+
+    private fun updateMonthList() {
+        model.monthList.clear()
+        val clientSubscriptions = subscriptionService.get(model.selectedClient.value!!)
+        model.monthList.addAll(
+            clientSubscriptions.stream().map { it.group.period }.toList()
+        )
+    }
 }

@@ -11,6 +11,9 @@ interface SubscriptionService {
     fun get(client: Client, month: YearMonth): List<Subscription>
 
     @Throws(IllegalArgumentException::class)
+    fun get(client: Client): List<Subscription>
+
+    @Throws(IllegalArgumentException::class)
     fun subscribe(client: Client, group: Group, orderCount: Int, compensation: Int): Subscription
 
     @Throws(IllegalArgumentException::class)

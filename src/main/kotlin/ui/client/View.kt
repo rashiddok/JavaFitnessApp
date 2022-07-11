@@ -57,7 +57,7 @@ class View {
                 if (model.selectedMonth.value != null) {
                     workoutVisitInfoRow("Заказано", model.workoutOrderedCount.value)
                     workoutVisitInfoRow("Посещено", model.workoutVisitedCount.value)
-                    workoutVisitInfoRow("Пропущено", model.workoutCanceledCount.value)
+                    workoutVisitInfoRow("Отменено", model.workoutCanceledCount.value)
                 }
             }
         }
@@ -169,8 +169,6 @@ class View {
             }
 
             Column(modifier = Modifier.width(200.dp)) {
-                remember { model.monthList }
-                remember { model.selectedMonth }
                 val expandChooser = remember { mutableStateOf(false) }
 
                 TextField(
@@ -192,7 +190,7 @@ class View {
                     expanded = expandChooser.value,
                     onDismissRequest = {expandChooser.value = false}
                 ) {
-                    model.monthList.value.forEach{ month ->
+                    model.monthList.forEach{ month ->
                         DropdownMenuItem(
                             onClick = {controller.setWorkoutPeriod(month); expandChooser.value = false},
                             modifier = Modifier
