@@ -37,6 +37,7 @@ class View {
             }
         }
 
+        // TODO добавить изменение списка после создания группы
         model.newGroupDialog.value?.show()
     }
 
