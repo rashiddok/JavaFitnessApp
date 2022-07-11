@@ -1,6 +1,7 @@
 package ui.createClient
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -69,7 +70,8 @@ class NewClientDialog @Inject constructor(
                             // Композ ругается, если мы самостоятельно вызываем dispose() на диалоге, он хочет это делать сам.
                             // Поэтому меняем значение MutableState и композ сам все пересоберет.
                             closeCallback.run()
-                        }
+                        },
+                        shape = CircleShape
                     ) {
                         Text("СОЗДАТЬ")
                     }
