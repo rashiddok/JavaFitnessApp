@@ -41,7 +41,17 @@ class GroupServiceImpl @Inject constructor(
     }
 
     override fun markWorkout(workout: Workout, visits: List<WorkoutVisit>) {
-        TODO("Not yet implemented")
+        val entityManager = hibernateFactory.sessionFactory.createEntityManager()
+
+        entityManager.transaction.begin()
+        visits.forEach {
+            if (it.id == null)
+                entityManager.persist(it)
+            else
+                entityManager.merge(it)
+        }
+        entityManager.transaction.commit()
+        entityManager.close()
     }
 
     override fun close(group: Group): Group {

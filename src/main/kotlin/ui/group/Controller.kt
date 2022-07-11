@@ -3,6 +3,7 @@ package ui.group
 import entity.*
 import service.GroupService
 import ui.subscription.SubscriptionDialog
+import java.util.stream.Collectors
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -11,6 +12,9 @@ class Controller @Inject constructor(
     private val subscriptionDialogProvider: Provider<SubscriptionDialog>
 ){
     lateinit var model: Model
+
+    private var visitsCache: MutableList<WorkoutVisit> = ArrayList()
+    private var isCommited: Boolean = false
 
     fun init(model: Model) {
         this.model = model
@@ -58,14 +62,34 @@ class Controller @Inject constructor(
             .orElse(null)
     }
 
+    fun selectWorkout(newWorkout: Workout) {
+        val oldWorkout = model.selectedWorkout.value
+
+        if (oldWorkout != null && !isCommited) {
+            val toDelete = ArrayList<WorkoutVisit>()
+            oldWorkout.visits.forEach { original ->
+                val cached = visitsCache.find { it.client == original.client }
+                if (cached != null)
+                    original.visitStatus = cached.visitStatus
+                else
+                    toDelete.add(original)
+            }
+            oldWorkout.visits.removeAll(toDelete)
+        }
+
+        isCommited = false
+        model.selectedWorkout.value = newWorkout
+        visitsCache = newWorkout.visits.stream()
+            .map {
+                WorkoutVisit(it.client, it.workout, it.visitStatus)
+            }
+            .collect(Collectors.toList())
+    }
+
     fun updateVisitStatus(workout: Workout, client: Client): VisitStatus {
         val currentStatus = workout.visits.stream()
             .filter { visit -> visit.client == client }
             .findFirst()
-
-        currentStatus.ifPresent{
-            workout.visits.remove(it)
-        }
 
         val newStatus = currentStatus
             .map { visit -> visit.visitStatus }
@@ -74,10 +98,26 @@ class Controller @Inject constructor(
             }
             .orElse(VisitStatus.VISITED)
 
-        workout.visits.add(WorkoutVisit(client, workout, newStatus))
+        currentStatus.ifPresentOrElse(
+            {
+                it.visitStatus = newStatus
+            },
+            {
+                workout.visits.add(WorkoutVisit(client, workout, newStatus))
+            }
+        )
 
         // TODO
 
         return newStatus
+    }
+
+    fun commit() {
+        val visits = model.selectedWorkout.value!!.visits
+
+        groupService.markWorkout(model.selectedWorkout.value!!, visits)
+
+        model.selectedWorkout.value = null
+        isCommited = true
     }
 }

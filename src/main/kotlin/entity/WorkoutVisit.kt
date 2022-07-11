@@ -16,11 +16,11 @@ class WorkoutVisit (
 
     @Convert(converter = VisitStatus.Converter::class)
     @Column(name = "status_id", nullable = false)
-    val visitStatus: VisitStatus
+    var visitStatus: VisitStatus
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val id: Int? = null
+    val id: Int? = null
 
     companion object {
         const val COLUMN_NAME_CLIENT = "client_id"

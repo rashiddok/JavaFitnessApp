@@ -6,9 +6,9 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Button
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import entity.*
 import java.time.format.DateTimeFormatter
-import kotlin.streams.toList
 
 class View {
     private lateinit var model: Model
@@ -127,6 +126,35 @@ class View {
                     }
                 }
             }
+
+            Row(
+                modifier = Modifier.padding(vertical = 5.dp)
+            ) {
+                Column(
+                    Modifier.width(fioWidth.dp).height(rowHeight.dp)
+                ) {}
+
+                workoutList.forEach { workout ->
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier.width(cellWidth.dp).height(rowHeight.dp)
+                    ) {
+                        if (workout == model.selectedWorkout.value)
+                            Button(
+                                onClick = controller::commit,
+                                shape = CircleShape,
+                                contentPadding = PaddingValues(5.dp)
+                            ) {
+                                Icon(
+                                    Icons.Filled.Send,
+                                    null,
+                                    tint = Color.White
+                                )
+                            }
+                    }
+                }
+            }
         }
     }
 
@@ -161,6 +189,15 @@ class View {
                 .width(width.dp)
                 .height(height.dp)
                 .border(BorderStroke(0.5.dp, Color.Black))
+                .background(
+                    if (workout == model.selectedWorkout.value)
+                        Color.Red
+                    else
+                        Color.Transparent
+                )
+                .clickable {
+                    controller.selectWorkout(workout)
+                },
         ) {
             Text(
                 text = workoutDateString(workout),
@@ -179,12 +216,19 @@ class View {
         Column(
             modifier = Modifier
                 .clickable {
-                    val newStatus = controller.updateVisitStatus(workout, client)
-                    status.value = newStatus
+                    if(workout == model.selectedWorkout.value) {
+                        val newStatus = controller.updateVisitStatus(workout, client)
+                        status.value = newStatus
+                    }
                 }
                 .width(width.dp)
                 .height(height.dp)
-                .border(BorderStroke(0.5.dp, Color.Black))
+                .border(
+                    if (workout == model.selectedWorkout.value)
+                        BorderStroke(2.dp, Color.Red)
+                    else
+                        BorderStroke(0.5.dp, Color.Black)
+                )
                 .background(
                     when (status.value) {
                         VisitStatus.VISITED -> Color.Green
