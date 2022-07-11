@@ -284,7 +284,7 @@ class View {
             WorkoutType.values().forEach { workoutType ->
                 DropdownMenuItem(
                     onClick = {
-                        controller::setWorkoutType
+                        controller.setWorkoutType(workoutType)
                         expanded.value = false
                     },
                     modifier = Modifier

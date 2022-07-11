@@ -95,7 +95,7 @@ class RebalanceDialog @Inject constructor(
                         onClick = {
                             when (type.value) {
                                 TransactionType.DEPOSIT -> transactionService.deposit(client, amount.value, comment.value)
-                                TransactionType.WITHDRAWAL -> transactionService.deposit(client, amount.value, comment.value)
+                                TransactionType.WITHDRAWAL -> transactionService.withdraw(client, amount.value, comment.value)
                             }
 
                             // Композ ругается, если мы самостоятельно вызываем dispose() на диалоге, он хочет это делать сам.
