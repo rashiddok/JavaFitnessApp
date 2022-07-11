@@ -103,7 +103,12 @@ class RebalanceDialog @Inject constructor(
                             closeCallback.run()
                         }
                     ) {
-                        Text("СОЗДАТЬ")
+                        Text(
+                            when (type.value) {
+                                TransactionType.DEPOSIT -> "Пополнить"
+                                TransactionType.WITHDRAWAL -> "Списать"
+                            }
+                        )
                     }
                 }
             }
