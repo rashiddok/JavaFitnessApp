@@ -1,11 +1,13 @@
 package ui.group
 
 import entity.*
+import service.GroupService
 import ui.subscription.SubscriptionDialog
 import javax.inject.Inject
 import javax.inject.Provider
 
 class Controller @Inject constructor(
+    private val groupService: GroupService,
     private val subscriptionDialogProvider: Provider<SubscriptionDialog>
 ){
     lateinit var model: Model
@@ -15,7 +17,7 @@ class Controller @Inject constructor(
     }
 
     fun updateModel() {
-        model.clientList.value = getClientList(model.selectedGroup.value!!)
+        model.clientList.value = groupService.getClientList(model.selectedGroup.value!!)
     }
 
     fun closeGroup() {
@@ -26,7 +28,10 @@ class Controller @Inject constructor(
         model.subscriptionDialog.value = subscriptionDialogProvider.get()
             .apply {
                 init(
-                    closeCallback = { model.subscriptionDialog.value = null },
+                    closeCallback = {
+                        model.subscriptionDialog.value = null
+                        updateModel()
+                    },
                     group = model.selectedGroup.value!!
                 )
             }
@@ -36,7 +41,10 @@ class Controller @Inject constructor(
         model.subscriptionDialog.value = subscriptionDialogProvider.get()
             .apply {
                 init(
-                    closeCallback = { model.subscriptionDialog.value = null },
+                    closeCallback = {
+                        model.subscriptionDialog.value = null
+                        updateModel()
+                    },
                     group = model.selectedGroup.value!!
                 )
             }
@@ -72,15 +80,4 @@ class Controller @Inject constructor(
 
         return newStatus
     }
-}
-
-private fun getClientList(group: Group): List<Client> {
-    return listOf(
-        Client("Dima", "Dima", "Dima"),
-        Client("Vlad", "Vlad", "Vlad"),
-        Client("Mia", "Mia", "Mia"),
-        Client("Oly", "Oly", "Oly"),
-        Client("Paul", "Paul", "Paul"),
-        Client("Angelina", "Angelina", "Angelina")
-    )
 }
