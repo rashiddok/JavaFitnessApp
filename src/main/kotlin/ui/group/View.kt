@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import entity.*
 import java.time.format.DateTimeFormatter
+import kotlin.streams.toList
 
 class View {
     private lateinit var model: Model
@@ -265,5 +266,5 @@ private fun clientString(client: Client): String {
 }
 
 private fun workoutDateString(workout: Workout): String {
-    return workout.date.format(DateTimeFormatter.ofPattern("MM.yy"))
+    return workout.date.format(DateTimeFormatter.ofPattern("dd.MM"))
 }

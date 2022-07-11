@@ -1,11 +1,14 @@
 package ui.createGroup
 
-import entity.Group
-import entity.Workout
 import entity.WorkoutType
+import service.GroupService
 import java.time.LocalDateTime
+import javax.inject.Inject
+import kotlin.streams.toList
 
-class Controller {
+class Controller @Inject constructor(
+    private val groupService: GroupService
+) {
     private lateinit var model: Model
 
     fun init(model: Model) {
@@ -47,17 +50,11 @@ class Controller {
         val workoutType = model.selectedWorkoutType.value
         val yearMonth = model.selectedMonth.value
         val price = model.workoutPrice.value.toInt()
-        val workouts = ArrayList<Workout>()
-
-        val group = Group(workoutType, price, yearMonth, workouts)
-
-        // Костыль для наполнения группы запланированными датами тренировок
-        model.selectedDates.stream()
+        val dates = model.selectedDates.stream()
             .map { day -> LocalDateTime.of(yearMonth.year, yearMonth.monthValue, day, 0, 0) }
-            .map { date -> Workout(date, group) }
-            .forEach(workouts::add)
+            .toList()
 
-        // TODO Сохранить группу
+        groupService.create(workoutType, yearMonth, dates, price)
 
         model.closeCallback.run()
     }

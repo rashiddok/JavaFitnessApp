@@ -34,13 +34,13 @@ class Controller {
     }
 
     fun updateVisitStatus(workout: Workout, client: Client): VisitStatus {
-        val visits = workout.visits as ArrayList
-
-        val currentStatus = visits.stream()
+        val currentStatus = workout.visits.stream()
             .filter { visit -> visit.client == client }
             .findFirst()
 
-        currentStatus.ifPresent{ visits.remove(it)}
+        currentStatus.ifPresent{
+            workout.visits.remove(it)
+        }
 
         val newStatus = currentStatus
             .map { visit -> visit.visitStatus }
@@ -49,7 +49,7 @@ class Controller {
             }
             .orElse(VisitStatus.VISITED)
 
-        visits.add(WorkoutVisit(client, workout, newStatus))
+        workout.visits.add(WorkoutVisit(client, workout, newStatus))
 
         // TODO
 

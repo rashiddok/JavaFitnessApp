@@ -1,8 +1,6 @@
 package entity
 
 import entity.converter.ConverterYearMonthToLocalDate
-import org.hibernate.annotations.Type
-import java.time.LocalDateTime
 import java.time.YearMonth
 import javax.persistence.*
 
@@ -21,8 +19,8 @@ class Group(
     @Column(name = columnNamePeriod, nullable = false)
     val period: YearMonth,
 
-    @OneToMany(mappedBy = "group")
-    val workout: List<Workout>
+    @OneToMany(cascade = [CascadeType.ALL], mappedBy = "group", fetch = FetchType.EAGER)
+    val workout: MutableList<Workout>
 ) {
     @Column(name = "isActive")
     var isActive: Boolean = true
@@ -44,6 +42,8 @@ class Group(
 
         if (workoutType != other.workoutType) return false
         if (period != other.period) return false
+        //TODO это плохо, т.к. не нужно создавать группы одинакового типа в один месяц. Необходимо ограничить создание дублирующей группы
+        if(id != other.id) return false
 
         return true
     }

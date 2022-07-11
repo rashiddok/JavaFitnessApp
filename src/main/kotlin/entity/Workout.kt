@@ -24,7 +24,7 @@ class Workout (
     val group: Group
 ) {
     @OneToMany(mappedBy = "workout")
-    val visits: List<WorkoutVisit> = ArrayList()
+    val visits: MutableList<WorkoutVisit> = ArrayList()
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

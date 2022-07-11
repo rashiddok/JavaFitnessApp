@@ -1,12 +1,15 @@
 package service
 
-import entity.*
+import entity.Group
+import entity.Workout
+import entity.WorkoutType
+import entity.WorkoutVisit
+import java.time.LocalDateTime
 import java.time.YearMonth
-import kotlin.jvm.Throws
 
 interface GroupService {
     @Throws(IllegalArgumentException::class)
-    fun create(workoutType: WorkoutType, period: YearMonth, workout: List<Workout>, price: Int): Group
+    fun create(workoutType: WorkoutType, period: YearMonth, selectedDates: List<LocalDateTime>, price: Int): Group
     fun find(pattern: String): List<Group>
     fun getAll(): List<Group>
     @Throws(IllegalArgumentException::class)

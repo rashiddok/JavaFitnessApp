@@ -3,6 +3,7 @@ package ui.groupList
 import entity.Group
 import entity.Workout
 import entity.WorkoutType
+import service.GroupService
 import ui.createGroup.NewGroupDialog
 import java.time.LocalDateTime
 import java.time.Month
@@ -15,14 +16,15 @@ import kotlin.random.Random
 import kotlin.streams.toList
 
 class Controller @Inject constructor(
-    private val newGroupDialogProvider: Provider<NewGroupDialog>
+    private val newGroupDialogProvider: Provider<NewGroupDialog>,
+    private val groupService: GroupService
 ) {
     private lateinit var model: Model;
     private lateinit var fullGroupList: List<Group>
 
     fun init(model: Model) {
         this.model = model
-        this.fullGroupList = stubGroup()
+        this.fullGroupList = groupService.getAll()
 
         model.groupList.value = fullGroupList;
     }
@@ -71,7 +73,7 @@ private fun stubGroup(): List<Group> {
 }
 
 private fun stabWorkoutList(group: Group) {
-    val workoutList = group.workout as ArrayList
+    val workoutList = group.workout.toMutableList()
 
     for (day in 1..group.period.lengthOfMonth() step 2) {
         workoutList.add(
@@ -81,4 +83,6 @@ private fun stabWorkoutList(group: Group) {
             )
         )
     }
+
+    group.workout.addAll(workoutList)
 }

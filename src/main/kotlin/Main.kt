@@ -21,9 +21,10 @@ class Main{}
 fun main() {
 
     val injector = Guice.createInjector(DiModule())
+    // инициализация фабрики должна происходить до создания панелей с целью инициализации енамов
+    injector.getInstance(HibernateSessionFactory::class.java).apply { init() }
     val clientTabContent = injector.getInstance(ClientTabContent::class.java).apply { init() }
     val groupTabContent = injector.getInstance(GroupTabContent::class.java).apply { init() }
-    injector.getInstance(HibernateSessionFactory::class.java).apply { init() }
 
     application {
         Window(
