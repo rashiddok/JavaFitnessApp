@@ -2,7 +2,6 @@ package ui.client
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.remember
 import entity.Client
 import javax.inject.Inject
 
@@ -21,8 +20,6 @@ class ClientPanel
 
     @Composable
     fun show() {
-        remember { model.selectedClient }
-
         if (model.selectedClient.value == null) {
             return
         }

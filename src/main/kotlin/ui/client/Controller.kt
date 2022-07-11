@@ -26,13 +26,13 @@ class Controller @Inject constructor(
     }
 
     fun updateModel() {
-        model.firstName.value = model.selectedClient.value?.firstName ?: ""
-        model.lastName.value = model.selectedClient.value?.lastName ?: ""
-        model.patronymic.value = model.selectedClient.value?.patronymic ?: ""
+        model.firstName.value = model.selectedClient.value!!.firstName
+        model.lastName.value = model.selectedClient.value!!.lastName
+        model.patronymic.value = model.selectedClient.value!!.patronymic
+
+        model.balance.value = transactionService.getBalance(model.selectedClient.value!!)
 
         model.selectedMonth.value = null
-        model.balance.value = 100 // TODO
-
         model.workoutOrderedCount.value = 0;
         model.workoutVisitedCount.value = 0;
         model.workoutCanceledCount.value = 0;
