@@ -50,12 +50,24 @@ class SubscriptionServiceImpl @Inject constructor(
         entityManager.close()
 
         // TODO должно быть в рамках одной транзакции
-        transactionService.deposit(client, orderCount * compensationRate, "Покупка абонемента")
+        transactionService.deposit(client, orderCount * compensationRate, "Покупка абонемента" + group.period)
 
         return subscription
     }
 
     override fun unsubscribe(client: Client, group: Group): Boolean {
-        TODO("Not yet implemented")
+        val entityManager = hibernateFactory.sessionFactory.createEntityManager()
+
+        val subscriptions = get(client, group.period)
+        val subscription = subscriptions.filter { it.group == group }[0]
+
+        entityManager.transaction.begin()
+        entityManager.remove(subscription)
+        entityManager.transaction.commit()
+        entityManager.close()
+
+        transactionService.withdraw(client, subscription.orderCount * subscription.compensationRate, "Удаление абонемента " + group.period)
+
+        return true
     }
 }
