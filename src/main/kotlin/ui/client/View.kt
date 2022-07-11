@@ -17,7 +17,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 class View {
     companion object {
@@ -34,15 +36,16 @@ class View {
 
     @Composable
     fun show() {
-        remember { model.selectedMonth }
-        remember { model.selectedClient }
-
         if (model.selectedClient.value == null) {
             return
         }
 
-        Row(modifier = Modifier.fillMaxWidth()) {
-            Column(modifier = Modifier.fillMaxHeight(0.9f)) {
+        Row(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(
+                modifier = Modifier.fillMaxHeight(0.9f)
+            ) {
                 diver("Личные данные")
                 fioRow("Фамилия", model.lastName, controller::setLastName, model.unsavedLastName )
                 fioRow("Имя", model.firstName, controller::setFirstName, model.unsavedFirstName )
@@ -68,30 +71,37 @@ class View {
         }
 
         model.rebalanceDialog.value?.show()
-        
+
         model.subscriptionDialog.value?.show()
     }
 
     @Composable
     private fun diver(title: String) {
         Row (
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(10.dp)
         ){
-            Text(title, Modifier.scale(0.7f), color = MaterialTheme.colors.primary)
+            Text(title, style = TextStyle(fontSize = 12.sp), color = MaterialTheme.colors.primary, modifier = Modifier.width(120.dp))
             Divider(color = MaterialTheme.colors.primary)
         }
     }
 
     @Composable
     private fun fioRow(label: String, inputState: MutableState<String>, setter: (String) -> Unit, unsavedState: MutableState<Boolean>) {
-        remember { inputState }
-
-        Row (horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically){
-            Column(modifier = Modifier.width(COLUMN_WIDTH_LABEL)) {
+        Row (
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(start = 50.dp)
+        ){
+            Column(
+                modifier = Modifier.width(COLUMN_WIDTH_LABEL)
+            ) {
                 Text(label)
             }
 
-            Column (modifier = Modifier.width(200.dp)) {
+            Column (
+                modifier = Modifier.width(200.dp)
+            ) {
                 TextField(
                     value = inputState.value,
                     onValueChange = setter::invoke,
@@ -113,11 +123,10 @@ class View {
 
     @Composable
     private fun balanceRow() {
-        remember { model.balance }
-
         Row (
             horizontalArrangement = Arrangement.spacedBy(10.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(start = 50.dp)
         ){
             Column(
                 modifier = Modifier.width(COLUMN_WIDTH_LABEL)
@@ -152,7 +161,8 @@ class View {
     private fun periodRow() {
         Row (
             horizontalArrangement = Arrangement.spacedBy(10.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(start = 50.dp)
         ) {
             Column (modifier = Modifier.width(COLUMN_WIDTH_LABEL)) {
                 Text("Месяц")
@@ -207,12 +217,17 @@ class View {
         Row (
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(start = 50.dp)
         ) {
-            Column (modifier = Modifier.width(COLUMN_WIDTH_LABEL)) {
+            Column (
+                modifier = Modifier.width(COLUMN_WIDTH_LABEL)
+            ) {
                 Text(label)
             }
 
-            Column(modifier = Modifier.width(60.dp)) {
+            Column(
+                modifier = Modifier.width(60.dp)
+            ) {
                 TextField(
                     value = count.toString(),
                     enabled = false,
