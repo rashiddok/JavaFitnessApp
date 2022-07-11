@@ -1,12 +1,12 @@
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Tab
-import androidx.compose.material.TabRow
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
@@ -41,16 +41,21 @@ fun main() {
                         TabRow(
                             selectedTabIndex = selectedTabIndex.value
                         ) {
+                            val selectedTabStyle = TextStyle(fontSize = 19.sp, fontWeight = FontWeight.Bold)
                             Tab(
                                 selected = selectedTabIndex.value == 0,
                                 onClick = { selectedTabIndex.value = 0 },
-                                text = { Text("Группы") }
+                                text = {
+                                    Text("Группы", style = if (selectedTabIndex.value == 0) selectedTabStyle else LocalTextStyle.current)
+                                }
                             )
 
                             Tab(
                                 selected = selectedTabIndex.value == 1,
                                 onClick = { selectedTabIndex.value = 1 },
-                                text = { Text("Клиенты")}
+                                text = {
+                                    Text("Клиенты", style = if (selectedTabIndex.value == 1) selectedTabStyle else LocalTextStyle.current)
+                                }
                             )
                         }
                     }
