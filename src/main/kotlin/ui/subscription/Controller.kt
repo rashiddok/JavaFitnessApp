@@ -55,11 +55,13 @@ class Controller @Inject constructor(
                     0
                 else
                     subscriptionService.get(client, model.selectedGroup.value!!.period).find { it.group == model.selectedGroup.value!! }!!.orderCount
-            model.compensationRate.value
+
+            model.compensationRate.value =
                 if (model.selectedAction.value == Model.Action.ADD)
                     0
                 else
                     subscriptionService.get(client, model.selectedGroup.value!!.period).find { it.group == model.selectedGroup.value!! }!!.compensationRate
+
             model.sum.value =
                 if (model.selectedAction.value == Model.Action.ADD)
                     0
@@ -104,7 +106,8 @@ class Controller @Inject constructor(
             Model.Action.ADD -> subscriptionService.subscribe(model.selectedClient.value!!, model.selectedGroup.value!!, model.orderCount.value!!, model.compensationRate.value!!)
             Model.Action.REMOVE -> subscriptionService.unsubscribe(model.selectedClient.value!!, model.selectedGroup.value!!)
         }
-        subscriptionService
+        updateClientList()
+        setClient(null)
     }
 
     private fun updateClientList() {
