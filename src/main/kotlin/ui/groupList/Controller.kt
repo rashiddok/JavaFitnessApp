@@ -43,9 +43,22 @@ class Controller @Inject constructor(
     }
 
     fun createNewGroup() {
+        val beforeCreateGroup = groupService.getAll()
+
         model.newGroupDialog.value = newGroupDialogProvider.get()
             .apply {
-                init{ model.newGroupDialog.value = null }
+                init{
+                    model.newGroupDialog.value = null
+                    val afterCreateGroup = groupService.getAll()
+
+                    if (beforeCreateGroup.size == afterCreateGroup.size) {
+                        return@init
+                    }
+
+                    fullGroupList = afterCreateGroup
+                    find(model.searchPattern.value)
+                    model.selectedGroup.value = afterCreateGroup.get(beforeCreateGroup.size)
+                }
             }
     }
 
