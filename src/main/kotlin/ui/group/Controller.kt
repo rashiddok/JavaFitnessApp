@@ -73,6 +73,10 @@ class Controller @Inject constructor(
     }
 
     fun selectWorkout(newWorkout: Workout) {
+        if (!model.selectedGroup.value!!.isActive) {
+            return
+        }
+
         val oldWorkout = model.selectedWorkout.value
 
         if (oldWorkout != null && !isCommited) {

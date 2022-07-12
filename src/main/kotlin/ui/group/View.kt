@@ -73,9 +73,18 @@ class View {
                 .fillMaxWidth()
                 .padding(30.dp)
         ) {
-            Column {
-                buttons()
-            }
+            if (model.selectedGroup.value!!.isActive)
+                Column {
+                    buttons()
+                }
+            else
+                Text(
+                    text = "Группа закрыта",
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp
+                    )
+                )
         }
 
         model.subscriptionDialog.value?.show()
