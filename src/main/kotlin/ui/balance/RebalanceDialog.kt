@@ -105,8 +105,8 @@ class RebalanceDialog @Inject constructor(
                     ) {
                         Text(
                             when (type.value) {
-                                TransactionType.DEPOSIT -> "Пополнить"
-                                TransactionType.WITHDRAWAL -> "Списать"
+                                TransactionType.DEPOSIT -> "ПОПОЛНИТЬ"
+                                TransactionType.WITHDRAWAL -> "СПИСАТЬ"
                             }
                         )
                     }
