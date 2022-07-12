@@ -47,6 +47,26 @@ class View {
             title()
         }
 
+        Row(
+            modifier = Modifier.padding(15.dp)
+        ) {
+            Column(
+                modifier = Modifier.width(200.dp)
+            ) {
+                Text(
+                    text = "Стоимость занятия:",
+                    style = TextStyle(fontWeight = FontWeight.Bold)
+                )
+            }
+
+            Column {
+                Text(
+                    text = model.selectedGroup.value!!.price.toString(),
+                    style = TextStyle(fontWeight = FontWeight.Bold)
+                )
+            }
+        }
+
         Row (
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
@@ -55,15 +75,6 @@ class View {
                 .fillMaxHeight(0.7f)
         ) {
             table()
-        }
-
-        Row (
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            price()
         }
 
         Row (
@@ -248,26 +259,6 @@ class View {
                     }
                 )
         ) {}
-    }
-
-    @Composable
-    private fun price() {
-        Column(
-            modifier = Modifier.width(200.dp)
-        ) {
-            Text("Стоимость занятия")
-        }
-
-        Column (
-            modifier = Modifier.width(50.dp)
-        ) {
-            TextField(
-                value = model.selectedGroup.value!!.price.toString(),
-                onValueChange = {},
-                enabled = false,
-                singleLine = true
-            )
-        }
     }
 
     @Composable
