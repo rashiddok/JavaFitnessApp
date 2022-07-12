@@ -2,6 +2,7 @@ package ui.group
 
 import entity.*
 import service.GroupService
+import ui.closeGroup.CloseGroupDialog
 import ui.subscription.SubscriptionDialog
 import java.util.stream.Collectors
 import javax.inject.Inject
@@ -9,7 +10,8 @@ import javax.inject.Provider
 
 class Controller @Inject constructor(
     private val groupService: GroupService,
-    private val subscriptionDialogProvider: Provider<SubscriptionDialog>
+    private val subscriptionDialogProvider: Provider<SubscriptionDialog>,
+    private val closeGroupDialogProvider: Provider<CloseGroupDialog>
 ){
     lateinit var model: Model
 
@@ -25,7 +27,15 @@ class Controller @Inject constructor(
     }
 
     fun closeGroup() {
-        // TODO
+        model.closeGroupDialog.value = closeGroupDialogProvider.get()
+            .apply {
+                init(
+                    group = model.selectedGroup.value!!,
+                    closeCallback = {
+                        model.closeGroupDialog.value = null
+                    }
+                )
+            }
     }
 
     fun showAddClientToGroupDialog() {

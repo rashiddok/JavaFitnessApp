@@ -79,6 +79,8 @@ class View {
         }
 
         model.subscriptionDialog.value?.show()
+
+        model.closeGroupDialog.value?.show()
     }
 
     @Composable
@@ -99,7 +101,7 @@ class View {
         val clientList = model.clientList.value
 
         val rowHeight = 30
-        val fioWidth = 200
+        val fioWidth = 300
         val cellWidth = 40
 
         Column (

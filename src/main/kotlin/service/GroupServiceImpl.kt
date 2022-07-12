@@ -9,6 +9,8 @@ import javax.persistence.EntityManager
 import kotlin.streams.toList
 
 class GroupServiceImpl @Inject constructor(
+    private val subscriptionService: SubscriptionService,
+    private val transactionService: TransactionService,
     private val hibernateFactory: HibernateSessionFactory
 ) : GroupService  {
 
@@ -55,7 +57,30 @@ class GroupServiceImpl @Inject constructor(
     }
 
     override fun close(group: Group): Group {
-        TODO("Not yet implemented")
+        group.isActive = false
+
+        val entityManager = hibernateFactory.sessionFactory.createEntityManager()
+        entityManager.transaction.begin()
+        entityManager.merge(group)
+        entityManager.transaction.commit()
+        entityManager.close()
+
+        getClientList(group).forEach{client ->
+            val subscription = subscriptionService.get(client, group.period)[0]
+            val ordered = subscription.orderCount
+            val visitList = getVisitList(subscription.group, subscription.client)
+            val visited = visitList.filter { it.visitStatus == VisitStatus.VISITED }.size
+            val visitPayment = visited * group.price
+            val canceled = visitList.filter { it.visitStatus == VisitStatus.CANCELED }.size
+            val skipped = ordered - visited - canceled
+            val compensationRate = subscription.compensationRate
+            val skippedPayment = skipped * compensationRate
+            val totalPayment = visitPayment + skippedPayment
+
+            transactionService.withdraw(client, totalPayment, "Закрытие группы " + group.period)
+        }
+
+        return group
     }
 
     override fun getClientList(group: Group): List<Client> {
