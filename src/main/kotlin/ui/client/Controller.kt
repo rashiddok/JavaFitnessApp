@@ -98,7 +98,10 @@ class Controller @Inject constructor(
         model.selectedClient.value!!.lastName = model.lastName.value
         model.selectedClient.value!!.firstName = model.firstName.value
 
-        clientService.update(model.selectedClient.value!!)
+        val update = clientService.update(model.selectedClient.value!!)
+        // Чтобы обновить список
+        model.selectedClient.value = null
+        model.selectedClient.value = update
 
         model.unsavedLastName.value = false
         model.unsavedFirstName.value = false

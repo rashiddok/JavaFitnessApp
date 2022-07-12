@@ -1,7 +1,7 @@
 package ui.client
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
+import androidx.compose.runtime.MutableState
 import entity.Client
 import javax.inject.Inject
 
@@ -12,7 +12,7 @@ class ClientPanel
     private val controller: Controller
 ) {
 
-    fun init(selectedClient: State<Client?>) {
+    fun init(selectedClient: MutableState<Client?>) {
         model.init(selectedClient)
         controller.init(model)
         view.init(model, controller)
