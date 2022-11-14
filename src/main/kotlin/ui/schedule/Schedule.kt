@@ -9,6 +9,7 @@ class Schedule @Inject constructor(
     private val controller: Controller
 ) {
     fun init() {
+        controller.init(model)
         view.init(model, controller)
     }
 
