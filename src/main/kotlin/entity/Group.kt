@@ -23,6 +23,9 @@ class Group(
     @Column(name = "time", nullable = false)
     val time: LocalTime,
 
+    @Column(name = "endTime", nullable = false)
+    val endTime: LocalTime,
+
     @OneToMany(cascade = [CascadeType.ALL], mappedBy = "group", fetch = FetchType.EAGER)
     val workout: MutableList<Workout>
 ) {

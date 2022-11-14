@@ -7,7 +7,7 @@ import java.time.YearMonth
 
 interface GroupService {
     @Throws(IllegalArgumentException::class)
-    fun create(workoutType: WorkoutType, period: YearMonth, selectedDates: List<LocalDateTime>, time: LocalTime, price: Int): Group
+    fun create(workoutType: WorkoutType, period: YearMonth, selectedDates: List<LocalDateTime>, time: LocalTime, endTime: LocalTime, price: Int): Group
 
     fun find(pattern: String): List<Group>
 

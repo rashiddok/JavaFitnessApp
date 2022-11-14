@@ -11,17 +11,17 @@ class Model {
 
     val selectedMonth = mutableStateOf(YearMonth.now())
     val selectedTime = mutableStateOf(LocalTime.of(9,0))
+    val selectedEndTime = mutableStateOf(LocalTime.of(10,0))
     val selectedDates = mutableStateListOf<Int>()
     val selectedWorkoutType = mutableStateOf(WorkoutType.AEROBICS)
     val workoutPrice = mutableStateOf("15")
 
-    fun dayTime(): List<LocalTime>{
-        val dt: LocalTime = LocalTime.of(9,0)
-        val WORK_DAY_HOURS = 12
+    fun dayTime(startTime: Int): List<LocalTime>{
+        val dt: LocalTime = LocalTime.of(startTime,0)
         val times: ArrayList<LocalTime> = ArrayList()
-        var currentTime = 0
-        while (currentTime <= WORK_DAY_HOURS){
-            times.add(dt.plusHours(currentTime.toLong()))
+        var currentTime = startTime
+        while (currentTime <= 21){
+            times.add(LocalTime.of(currentTime, 0))
             currentTime++
         }
         return times.toList()

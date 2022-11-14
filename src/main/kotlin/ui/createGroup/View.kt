@@ -24,6 +24,7 @@ import java.awt.Dialog
 import java.awt.Dimension
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
+import java.time.LocalTime
 import java.time.Month
 import java.time.YearMonth
 
@@ -86,7 +87,17 @@ class View {
                 ) {
                     labelColumn("Начало занятия")
                     Column {
-                        workoutHourCombobox()
+                        workoutHourCombobox(9, model.selectedTime.value, 0)
+                    }
+                }
+
+                Row (
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    labelColumn("Окончание занятия")
+                    Column {
+                        workoutHourCombobox(model.selectedTime.value.hour + 1, model.selectedEndTime.value, 1)
                     }
                 }
 
@@ -313,11 +324,11 @@ class View {
     }
 
     @Composable
-    fun workoutHourCombobox() {
+    fun workoutHourCombobox(startTime: Int, selectedTime: LocalTime, setType: Int) {
         val expanded = remember { mutableStateOf(false) }
 
         TextField(
-            value = model.selectedTime.value.toString(),
+            value = selectedTime.toString(),
             onValueChange = {},
             modifier = Modifier.width(200.dp),
             enabled = false,
@@ -335,10 +346,14 @@ class View {
             onDismissRequest = { expanded.value = false },
 
             ) {
-            model.dayTime().forEach { workoutTime ->
+            model.dayTime(startTime).forEach { workoutTime ->
                 DropdownMenuItem(
                     onClick = {
-                        controller.setHour(workoutTime)
+                        if(setType == 0){
+                            controller.setHour(workoutTime)
+                        } else {
+                            controller.setEndTime(workoutTime)
+                        }
                         expanded.value = false
                     },
                     modifier = Modifier

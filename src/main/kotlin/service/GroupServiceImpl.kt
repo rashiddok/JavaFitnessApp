@@ -15,10 +15,10 @@ class GroupServiceImpl @Inject constructor(
     private val hibernateFactory: HibernateSessionFactory
 ) : GroupService  {
 
-    override fun create(workoutType: WorkoutType, period: YearMonth, selectedDates: List<LocalDateTime>, time: LocalTime, price: Int): Group {
+    override fun create(workoutType: WorkoutType, period: YearMonth, selectedDates: List<LocalDateTime>, time: LocalTime, endTime: LocalTime, price: Int): Group {
         val entityManager = beginTransaction()
 
-        val group = Group(workoutType, price, period, time, ArrayList())
+        val group = Group(workoutType, price, period, time, endTime, ArrayList())
 
         // Костыль для наполнения группы запланированными датами тренировок
         selectedDates.stream()

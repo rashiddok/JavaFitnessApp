@@ -61,6 +61,10 @@ class View {
                     text = "Время начала:" + model.selectedGroup.value!!.time.toString(),
                     style = TextStyle(fontWeight = FontWeight.Bold)
                 )
+                Text(
+                    text = "Время окончания:" + model.selectedGroup.value!!.endTime.toString(),
+                    style = TextStyle(fontWeight = FontWeight.Bold)
+                )
             }
 
             Column {

@@ -49,6 +49,11 @@ class Controller @Inject constructor(
 
     fun setHour(hour: LocalTime){
         model.selectedTime.value = hour
+        setEndTime(hour.plusHours(1))
+    }
+
+    fun setEndTime(hour: LocalTime){
+        model.selectedEndTime.value = hour
     }
 
     fun createNewGroup() {
@@ -56,11 +61,12 @@ class Controller @Inject constructor(
         val yearMonth = model.selectedMonth.value
         val price = model.workoutPrice.value.toInt()
         val time = model.selectedTime.value
+        val endTime = model.selectedEndTime.value
         val dates = model.selectedDates.stream()
             .map { day -> LocalDateTime.of(yearMonth.year, yearMonth.monthValue, day, time.hour, time.minute) }
             .toList()
 
-        groupService.create(workoutType, yearMonth, dates, time, price)
+        groupService.create(workoutType, yearMonth, dates, time, endTime, price)
 
         model.closeCallback.run()
     }

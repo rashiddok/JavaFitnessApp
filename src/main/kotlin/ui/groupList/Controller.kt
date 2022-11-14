@@ -80,7 +80,7 @@ class Controller @Inject constructor(
 private fun stubGroup(): List<Group> {
     return Arrays.stream(Month.values())
         .map { month ->
-            Group(WorkoutType.values()[Random.nextInt(0, 3)], 20, YearMonth.of(2022, month), LocalTime.now(), ArrayList(1))
+            Group(WorkoutType.values()[Random.nextInt(0, 3)], 20, YearMonth.of(2022, month), LocalTime.of(9, 0), LocalTime.of(10, 0), ArrayList(1))
                 .also { stabWorkoutList(it) }
         }
         .toList()
