@@ -6,7 +6,6 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.Month
 import java.time.YearMonth
-import java.util.*
 import java.util.stream.Collectors
 import kotlin.collections.ArrayList
 
@@ -32,6 +31,7 @@ class Model {
             times.add(dt.plusHours(currentTime.toLong()))
             currentTime++
         }
+        println(times.toString())
         return times.toList()
     }
 }
