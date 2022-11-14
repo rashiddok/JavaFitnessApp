@@ -31,7 +31,6 @@ class Model {
             times.add(dt.plusHours(currentTime.toLong()))
             currentTime++
         }
-        println(times.toString())
         return times.toList()
     }
 }

@@ -57,6 +57,10 @@ class View {
                     text = "Стоимость занятия:",
                     style = TextStyle(fontWeight = FontWeight.Bold)
                 )
+                Text(
+                    text = "Время начала:" + model.selectedGroup.value!!.time.toString(),
+                    style = TextStyle(fontWeight = FontWeight.Bold)
+                )
             }
 
             Column {

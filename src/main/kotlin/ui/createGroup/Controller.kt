@@ -47,13 +47,17 @@ class Controller @Inject constructor(
         }
     }
 
+    fun setHour(hour: LocalTime){
+        model.selectedTime.value = hour
+    }
+
     fun createNewGroup() {
         val workoutType = model.selectedWorkoutType.value
         val yearMonth = model.selectedMonth.value
         val price = model.workoutPrice.value.toInt()
         val time = model.selectedTime.value
         val dates = model.selectedDates.stream()
-            .map { day -> LocalDateTime.of(yearMonth.year, yearMonth.monthValue, day, 0, 0) }
+            .map { day -> LocalDateTime.of(yearMonth.year, yearMonth.monthValue, day, time.hour, time.minute) }
             .toList()
 
         groupService.create(workoutType, yearMonth, dates, time, price)

@@ -43,7 +43,7 @@ class View {
             create = {
                 ComposeDialog(null, Dialog.ModalityType.APPLICATION_MODAL)
                     .apply {
-                        size = Dimension(600, 600)
+                        size = Dimension(600, 800)
                         isResizable = false
                         addWindowListener(object : WindowAdapter() {
                             override fun windowClosing(e: WindowEvent?) {
@@ -77,6 +77,16 @@ class View {
                     labelColumn("Тип занятий")
                     Column {
                         workoutTypeCombobox()
+                    }
+                }
+
+                Row (
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    labelColumn("Начало занятия")
+                    Column {
+                        workoutHourCombobox()
                     }
                 }
 
@@ -295,6 +305,50 @@ class View {
                     Text(
                         text = workoutTypeString(workoutType),
                         color = if (model.selectedWorkoutType.value == workoutType)
+                            Color.White else  Color.Black
+                    )
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun workoutHourCombobox() {
+        val expanded = remember { mutableStateOf(false) }
+
+        TextField(
+            value = model.selectedTime.value.toString(),
+            onValueChange = {},
+            modifier = Modifier.width(200.dp),
+            enabled = false,
+            singleLine = true,
+            trailingIcon = {
+                Icon(
+                    Icons.Filled.ArrowDropDown, null,
+                    Modifier.clickable { expanded.value = !expanded.value }
+                )
+            }
+        )
+
+        DropdownMenu(
+            expanded = expanded.value,
+            onDismissRequest = { expanded.value = false },
+
+            ) {
+            model.dayTime().forEach { workoutTime ->
+                DropdownMenuItem(
+                    onClick = {
+                        controller.setHour(workoutTime)
+                        expanded.value = false
+                    },
+                    modifier = Modifier
+                        .background( if (model.selectedTime.value == workoutTime)
+                            MaterialTheme.colors.primary else  Color.Transparent
+                        )
+                ) {
+                    Text(
+                        text = workoutTime.toString(),
+                        color = if (model.selectedTime.value == workoutTime)
                             Color.White else  Color.Black
                     )
                 }
