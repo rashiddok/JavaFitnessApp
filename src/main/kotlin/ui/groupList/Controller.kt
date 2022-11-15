@@ -43,6 +43,10 @@ class Controller @Inject constructor(
         model.selectedGroup.value = group
     }
 
+    fun toggleHiddenGroups(state: Boolean){
+        model.showHiddenGroups.value = state
+    }
+
     fun createNewGroup() {
         val beforeCreateGroup = groupService.getAll()
 

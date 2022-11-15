@@ -9,6 +9,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -43,22 +44,33 @@ class View {
 
     @Composable
     private fun filter() {
-        TextField(
-            value = model.searchPattern.value,
-            onValueChange = controller::find,
-            placeholder = { Text("Поиск") },
-            singleLine = true,
-            leadingIcon = { Icon(Icons.Outlined.Search, null) },
-            colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent
-            ),
-            shape = CircleShape,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
-        )
+        Column() {
+            TextField(
+                value = model.searchPattern.value,
+                onValueChange = controller::find,
+                placeholder = { Text("Поиск") },
+                singleLine = true,
+                leadingIcon = { Icon(Icons.Outlined.Search, null) },
+                colors = TextFieldDefaults.textFieldColors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent
+                ),
+                shape = CircleShape,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+            )
+            Row(verticalAlignment = Alignment.CenterVertically){
+                Checkbox(checked = model.showHiddenGroups.value, onCheckedChange = { controller.toggleHiddenGroups(it) })
+                Text(
+                    text = "Скрыть закрытые группы",
+                    color = Color.Black
+                )
+
+            }
+
+        }
     }
 
     @Composable
@@ -66,7 +78,7 @@ class View {
         LazyColumn (
             modifier = Modifier.fillMaxWidth()
         ) {
-            model.groupList.value.forEach{ group ->
+            model.groupList.value.filter { group -> group.isActive || group.isActive == model.showHiddenGroups.value }.forEach{ group ->
                 item {
                     listItem(group)
                 }

@@ -126,6 +126,10 @@ class Controller @Inject constructor(
         return newStatus
     }
 
+    fun deleteGroup(){
+        model.selectedWorkout.value = null
+    }
+
     fun commit() {
         val visits = model.selectedWorkout.value!!.visits
 

@@ -291,7 +291,7 @@ class View {
         }
 
         Row(
-            horizontalArrangement = Arrangement.Center,
+            horizontalArrangement = Arrangement.spacedBy( 20.dp, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -300,6 +300,13 @@ class View {
                 onClick = controller::closeGroup
             ){
                 Text("ЗАКРЫТЬ ГРУППУ")
+            }
+            Button(
+                shape = CircleShape,
+                onClick = controller::deleteGroup,
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colors.error)
+            ){
+                Text("УДАЛИТЬ ГРУППУ")
             }
         }
     }
