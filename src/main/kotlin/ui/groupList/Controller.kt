@@ -20,14 +20,14 @@ class Controller @Inject constructor(
     private val newGroupDialogProvider: Provider<NewGroupDialog>,
     private val groupService: GroupService
 ) {
-    private lateinit var model: Model;
+    private lateinit var model: Model
     private lateinit var fullGroupList: List<Group>
 
     fun init(model: Model) {
         this.model = model
         this.fullGroupList = groupService.getAll()
 
-        model.groupList.value = fullGroupList;
+        model.groupList.value = fullGroupList
     }
 
     fun find(searchPattern: String) {
@@ -69,9 +69,11 @@ class Controller @Inject constructor(
             WorkoutType.PILATES -> "Пилатес"
             WorkoutType.YOGA -> "Йога"
         }
+        val groupsOfType = model.groupList.value.filter { v -> v.workoutType == group.workoutType && v.period == group.period }
+        val groupName = "Группа " + (groupsOfType.indexOf(group) + 1)
         val period = group.period.format(DateTimeFormatter.ofPattern("MM.yy"))
 
-        return String.format("%s %s", type, period)
+        return String.format("%s %s %s", groupName, type, period)
     }
 }
 
