@@ -37,7 +37,7 @@ class GroupServiceImpl @Inject constructor(
     }
 
     override fun getAll(): List<Group> {
-        val entityManager = hibernateFactory.sessionFactory.createEntityManager();
+        val entityManager = hibernateFactory.sessionFactory.createEntityManager()
         val criteria = entityManager.criteriaBuilder.createQuery(Group::class.java)
         criteria.from(Group::class.java)
         return entityManager.createQuery(criteria).resultList
@@ -94,10 +94,20 @@ class GroupServiceImpl @Inject constructor(
             .toList()
     }
 
+    override fun getClientGroups(client: Client): List<Group> {
+        val entityManager = hibernateFactory.sessionFactory.createEntityManager()
+        val criteria = entityManager.criteriaBuilder.createQuery(Subscription::class.java)
+        criteria.from(Subscription::class.java)
+        return entityManager.createQuery(criteria).resultList.stream()
+            .filter{ subscription -> subscription.client == client }
+            .map(Subscription::group)
+            .toList()
+    }
+
     override fun getVisitList(group: Group, client: Client): List<WorkoutVisit> {
         val workouts = group.workout
 
-        val entityManager = hibernateFactory.sessionFactory.createEntityManager();
+        val entityManager = hibernateFactory.sessionFactory.createEntityManager()
         val query = entityManager.createQuery(
             "select v from WorkoutVisit v where v.client = :client",
             WorkoutVisit::class.java
@@ -112,7 +122,7 @@ class GroupServiceImpl @Inject constructor(
     }
 
     private fun beginTransaction() : EntityManager {
-        val entityManager = hibernateFactory.sessionFactory.createEntityManager();
+        val entityManager = hibernateFactory.sessionFactory.createEntityManager()
         entityManager.transaction.begin()
         return entityManager
     }

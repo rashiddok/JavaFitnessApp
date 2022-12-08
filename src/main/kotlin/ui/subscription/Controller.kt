@@ -74,7 +74,6 @@ class Controller @Inject constructor(
         if (!Regex("[1-9]+\\d*").matches(input)) {
             return
         }
-
         val orderCount = input.toInt()
         model.orderCount.value = orderCount
 

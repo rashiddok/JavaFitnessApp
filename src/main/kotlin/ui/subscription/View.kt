@@ -86,6 +86,7 @@ class View {
                 ) {
                     labelColumn("Количество занятий")
                     numberInput(model.orderCount.value, controller::setOrderCount)
+                    labelColumn("Занятий в группе: " + model.selectedGroup.value?.workout?.size)
                 }
 
                 Row(
@@ -290,6 +291,7 @@ class View {
         Column {
             TextField(
                 value = currentValue?.toString() ?: "",
+
                 onValueChange = setter::invoke,
                 enabled = when (model.selectedAction.value) {
                     Model.Action.ADD -> true

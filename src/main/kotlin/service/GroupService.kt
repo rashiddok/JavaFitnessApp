@@ -23,5 +23,8 @@ interface GroupService {
     fun getClientList(group: Group): List<Client>
 
     @Throws(IllegalArgumentException::class)
+    fun getClientGroups(client: Client): List<Group>
+
+    @Throws(IllegalArgumentException::class)
     fun getVisitList(group: Group, client: Client): List<WorkoutVisit>
 }

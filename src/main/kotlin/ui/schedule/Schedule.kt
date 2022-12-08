@@ -9,12 +9,14 @@ class Schedule @Inject constructor(
     private val controller: Controller
 ) {
     fun init() {
+        model.init()
         controller.init(model)
         view.init(model, controller)
     }
 
     @Composable
     fun show() {
+        init()
         view.show()
     }
 }

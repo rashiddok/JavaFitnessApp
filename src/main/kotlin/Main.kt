@@ -15,6 +15,7 @@ import dao.HibernateSessionFactory
 import di.DiModule
 import ui.ClientTabContent
 import ui.GroupTabContent
+import ui.SalesTabContent
 import ui.SheduleTabContent
 
 class Main{}
@@ -27,6 +28,7 @@ fun main() {
     val clientTabContent = injector.getInstance(ClientTabContent::class.java).apply { init() }
     val groupTabContent = injector.getInstance(GroupTabContent::class.java).apply { init() }
     val scheduleTabContent = injector.getInstance(SheduleTabContent::class.java).apply { init() }
+    val salesTabContent = injector.getInstance(SalesTabContent::class.java).apply { init() }
 
     application {
         Window(
@@ -67,6 +69,13 @@ fun main() {
                                     Text("Расписание", style = if (selectedTabIndex.value == 2) selectedTabStyle else LocalTextStyle.current)
                                 }
                             )
+                            Tab(
+                                selected = selectedTabIndex.value == 3,
+                                onClick = { selectedTabIndex.value = 3 },
+                                text = {
+                                    Text("Выписки", style = if (selectedTabIndex.value == 3) selectedTabStyle else LocalTextStyle.current)
+                                }
+                            )
                         }
                     }
 
@@ -75,6 +84,7 @@ fun main() {
                             0 -> groupTabContent.show()
                             1 -> clientTabContent.show()
                             2 -> scheduleTabContent.show()
+                            3 -> salesTabContent.show()
                         }
                     }
                 }

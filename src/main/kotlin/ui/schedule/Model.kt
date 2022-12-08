@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.Month
 import java.time.YearMonth
 import java.util.*
 import java.util.stream.Collectors
@@ -13,12 +12,13 @@ import kotlin.collections.ArrayList
 
 
 class Model {
-    var dates: MutableState<List<LocalDateTime>> = mutableStateOf(this.monthDates())
     var time: MutableState<List<LocalTime>> = mutableStateOf(this.dayTime())
     val dayTimeList: MutableState<List<DaySchedule>> = mutableStateOf(Collections.emptyList())
+    val selectedMonth = mutableStateOf(YearMonth.now())
+    var dates: MutableState<List<LocalDateTime>> = mutableStateOf(Collections.emptyList())
 
     fun monthDates(): List<LocalDateTime>{
-        val ym: YearMonth = YearMonth.of(2022, Month.NOVEMBER)
+        val ym = selectedMonth.value
         val firstOfMonth: LocalDate = ym.atDay(1)
         val firstOfFollowingMonth: LocalDate = ym.plusMonths(1).atDay(1)
         val dates: List<LocalDateTime> = firstOfMonth.datesUntil(firstOfFollowingMonth).map{ d -> d.atTime(0,0)}.collect(Collectors.toList())
@@ -35,5 +35,9 @@ class Model {
             currentTime++
         }
         return times.toList()
+    }
+
+    fun init(){
+    dates.value = monthDates()
     }
 }
