@@ -106,7 +106,6 @@ class GroupServiceImpl @Inject constructor(
 
     override fun getVisitList(group: Group, client: Client): List<WorkoutVisit> {
         val workouts = group.workout
-
         val entityManager = hibernateFactory.sessionFactory.createEntityManager()
         val query = entityManager.createQuery(
             "select v from WorkoutVisit v where v.client = :client",
