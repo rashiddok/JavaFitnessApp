@@ -17,6 +17,7 @@ class HibernateSessionFactory {
         .addAnnotatedClass(Workout::class.java)
         .addAnnotatedClass(WorkoutVisit::class.java)
         .addAnnotatedClass(Transaction::class.java)
+        .addAnnotatedClass(User::class.java)
         .buildSessionFactory()
 
     fun init() {

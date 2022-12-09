@@ -9,5 +9,6 @@ class DiModule : AbstractModule() {
         bind(TransactionService::class.java).to(TransactionServiceImpl::class.java)
         bind(GroupService::class.java).to(GroupServiceImpl::class.java)
         bind(SubscriptionService::class.java).to(SubscriptionServiceImpl::class.java)
+        bind(UserService::class.java).to(UserServiceImpl::class.java)
     }
 }

@@ -16,13 +16,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import entity.*
 import service.GroupService
 import service.SubscriptionService
+import service.UserService
 import javax.inject.Inject
 
 class Login @Inject constructor(
+    private val userService: UserService
 ) {
     lateinit var loggedIn: MutableState<Boolean>
     lateinit var role: MutableState<Boolean>
@@ -42,12 +47,20 @@ class Login @Inject constructor(
               Row (
                   horizontalArrangement = Arrangement.Center,
                   verticalAlignment = Alignment.CenterVertically,
+                  modifier = Modifier.padding(15.dp)
+              ) {
+                  Text(text = "Авторизация", fontSize = 24.sp)
+              }
+              Row (
+                  horizontalArrangement = Arrangement.Center,
+                  verticalAlignment = Alignment.CenterVertically,
                   modifier = Modifier.padding(5.dp)
               ) {
-                  labelColumn("Логин")
+//                  labelColumn("Логин")
                   Column {
                       TextField(
                           value = username.value,
+                          label = { Text("Логин") },
                           onValueChange = {input -> username.value = input},
                       )
                   }
@@ -57,15 +70,19 @@ class Login @Inject constructor(
                   verticalAlignment = Alignment.CenterVertically,
                   modifier = Modifier.padding(5.dp)
               ) {
-                  labelColumn("Пароль")
+//                  labelColumn("Пароль")
                   Column {
                       TextField(
                           value = password.value,
+                          label = { Text("Пароль") },
                           onValueChange = {input -> password.value = input},
+                          visualTransformation = PasswordVisualTransformation()
                       )
                   }
               }
-              Row{
+              Row (
+                  modifier = Modifier.fillMaxWidth(),
+                  horizontalArrangement = Arrangement.Center){
                   Button(
                       shape = CircleShape,
                       modifier = Modifier.width(200.dp),
@@ -83,12 +100,10 @@ class Login @Inject constructor(
     }
 
     fun checkCreds(){
-        if(username.value == "admin" && password.value == "12345678"){
+        val user = userService.find(username.value) ?: return
+        if(password.value == user.password){
             loggedIn.value = true
-            role.value = true
-        } else if(username.value == "buh" && password.value == "12345678") {
-            loggedIn.value = true
-            role.value = false
+            role.value = user.isAdmin == "true"
         }
     }
 
