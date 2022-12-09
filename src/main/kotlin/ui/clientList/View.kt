@@ -25,14 +25,14 @@ class View {
     }
 
     @Composable
-    fun show() {
+    fun show(showCreateButton: Boolean) {
         Row(modifier = Modifier.fillMaxWidth()) {
             filter()
         }
         Row(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.9f)){
             list()
         }
-        if(model.showButton.value == true){
+        if(showCreateButton == true){
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                 Button(shape = CircleShape, onClick = controller::createNewClient){
                     Text("СОЗДАТЬ")

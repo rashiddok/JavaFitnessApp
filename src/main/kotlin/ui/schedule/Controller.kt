@@ -26,7 +26,7 @@ class Controller @Inject constructor(
             this.model.time.value.forEach { time ->
                 val group = cb(date, time)
                 val workout = group?.workout?.find { v -> v.date.dayOfMonth == date.dayOfMonth}
-                daySchedule.add(DaySchedule(if(workout == null) "" else group?.workoutType.toString(), time, if(workout?.date == null) date else workout?.date ))
+                daySchedule.add(DaySchedule(if(workout == null) "" else group?.workoutType.workoutTypeString(group?.workoutType), time, if(workout?.date == null) date else workout?.date ))
             }
         }
         return daySchedule.toList()

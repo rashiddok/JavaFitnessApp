@@ -25,8 +25,6 @@ class SalesTabContent @Inject constructor(
     private val groupListPanel: GroupListPanel,
     private val groupPanel: GroupPanel,
     private val clientListPanel: ClientListPanel,
-    private val clientPanel: ClientPanel
-
 ) {
 
     private val selectedGroup: MutableState<Group?> = mutableStateOf(null)
@@ -37,8 +35,7 @@ class SalesTabContent @Inject constructor(
         sales.init(selectedClient, selectedGroup)
         groupListPanel.init(selectedGroup, false)
         groupPanel.init(selectedGroup)
-        clientListPanel.init(selectedClient, false)
-        clientPanel.init(selectedClient, false)
+        clientListPanel.init(selectedClient)
     }
 
     @Composable
@@ -56,7 +53,7 @@ class SalesTabContent @Inject constructor(
                 if(selectedDropdownValue.value == "Группа") {
                     groupListPanel.show()
                 } else if(selectedDropdownValue.value == "Клиент"){
-                    clientListPanel.show()
+                    clientListPanel.show(false)
                 }
 
             }

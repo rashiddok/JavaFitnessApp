@@ -11,14 +11,14 @@ class ClientListPanel
     private val controller: Controller,
     private val view: View
 ){
-    fun init(selectedClient: MutableState<Client?>, showCreateButton: Boolean) {
-        model.init(selectedClient, showCreateButton)
+    fun init(selectedClient: MutableState<Client?>) {
+        model.init(selectedClient)
         controller.init(model)
         view.init(model, controller)
     }
 
     @Composable
-    fun show() {
-        view.show()
+    fun show(showCreateButton: Boolean = true) {
+        view.show(showCreateButton)
     }
 }

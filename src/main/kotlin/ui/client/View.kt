@@ -35,7 +35,7 @@ class View {
     }
 
     @Composable
-    fun show() {
+    fun show(isAdmin: Boolean) {
         if (model.selectedClient.value == null) {
             return
         }
@@ -62,7 +62,7 @@ class View {
             }
         }
 
-        if(model.isAdmin.value){
+        if(isAdmin){
             Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
                 Button(shape = CircleShape,
                     onClick = controller::showAddClientToGroupDialog

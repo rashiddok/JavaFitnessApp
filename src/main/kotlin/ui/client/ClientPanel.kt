@@ -12,19 +12,19 @@ class ClientPanel
     private val controller: Controller
 ) {
 
-    fun init(selectedClient: MutableState<Client?>, isAdmin: Boolean) {
-        model.init(selectedClient, isAdmin)
+    fun init(selectedClient: MutableState<Client?>) {
+        model.init(selectedClient)
         controller.init(model)
         view.init(model, controller)
     }
 
     @Composable
-    fun show() {
+    fun show(isAdmin: Boolean) {
         if (model.selectedClient.value == null) {
             return
         }
 
         controller.updateModel()
-        view.show()
+        view.show(isAdmin)
     }
 }

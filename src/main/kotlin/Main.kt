@@ -28,7 +28,7 @@ fun main() {
     val role: MutableState<Boolean> = mutableStateOf(false)
     val injector = Guice.createInjector(DiModule())
     injector.getInstance(HibernateSessionFactory::class.java).apply { init() }
-    val clientTabContent = injector.getInstance(ClientTabContent::class.java).apply { init(role.value) }
+    val clientTabContent = injector.getInstance(ClientTabContent::class.java).apply { init() }
     val groupTabContent = injector.getInstance(GroupTabContent::class.java).apply { init() }
     val scheduleTabContent = injector.getInstance(SheduleTabContent::class.java).apply { init() }
     val salesTabContent = injector.getInstance(SalesTabContent::class.java).apply { init() }
@@ -116,13 +116,13 @@ fun main() {
                             if(role.value){
                                 when (selectedTabIndex.value) {
                                     0 -> groupTabContent.show()
-                                    1 -> clientTabContent.show()
+                                    1 -> clientTabContent.show(true)
                                     2 -> scheduleTabContent.show()
                                     3 -> salesTabContent.show()
                                 }
                             } else {
                                 when (selectedTabIndex.value) {
-                                    0 -> clientTabContent.show()
+                                    0 -> clientTabContent.show(false)
                                     1 -> salesTabContent.show()
                                 }
                             }

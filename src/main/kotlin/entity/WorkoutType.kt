@@ -17,6 +17,14 @@ enum class WorkoutType {
 
     private lateinit var entity: EntityView
 
+    fun workoutTypeString(workoutType: WorkoutType): String {
+        return when (workoutType){
+            AEROBICS -> "Аэробика"
+            PILATES -> "Пилатес"
+            YOGA -> "Йога"
+        }
+    }
+
     companion object {
         fun init(entityManager: EntityManager) {
             val criteria = entityManager.criteriaBuilder.createQuery(EntityView::class.java)

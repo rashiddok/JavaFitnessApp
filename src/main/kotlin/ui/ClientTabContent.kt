@@ -19,16 +19,16 @@ class ClientTabContent @Inject constructor(
 ) {
     val selectedClient: MutableState<Client?> = mutableStateOf(null)
 
-    fun init(isAdmin: Boolean) {
-        clientListPanel.init(selectedClient, isAdmin)
-        clientPanel.init(selectedClient, isAdmin)
+    fun init() {
+        clientListPanel.init(selectedClient)
+        clientPanel.init(selectedClient)
     }
 
     @Composable
-    fun show() {
+    fun show(isAdmin: Boolean) {
         Row {
             Column(modifier = Modifier.fillMaxHeight().fillMaxWidth(0.3f)) {
-                clientListPanel.show()
+                clientListPanel.show(isAdmin)
             }
 
             Column {
@@ -36,7 +36,7 @@ class ClientTabContent @Inject constructor(
             }
 
             Column(modifier = Modifier.fillMaxHeight().fillMaxWidth()) {
-                clientPanel.show()
+                clientPanel.show(isAdmin)
             }
         }
     }
