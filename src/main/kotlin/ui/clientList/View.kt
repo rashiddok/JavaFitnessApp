@@ -32,13 +32,14 @@ class View {
         Row(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.9f)){
             list()
         }
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-            Button(shape = CircleShape, onClick = controller::createNewClient){
-                Text("СОЗДАТЬ")
+        if(model.showButton.value == true){
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                Button(shape = CircleShape, onClick = controller::createNewClient){
+                    Text("СОЗДАТЬ")
+                }
             }
-        }
-
         model.newClientDialog.value?.show()
+        }
     }
 
     @Composable

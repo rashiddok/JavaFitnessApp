@@ -12,8 +12,8 @@ class ClientPanel
     private val controller: Controller
 ) {
 
-    fun init(selectedClient: MutableState<Client?>) {
-        model.init(selectedClient)
+    fun init(selectedClient: MutableState<Client?>, isAdmin: Boolean) {
+        model.init(selectedClient, isAdmin)
         controller.init(model)
         view.init(model, controller)
     }

@@ -20,7 +20,7 @@ class GroupTabContent @Inject constructor(
     private val selectedGroup: MutableState<Group?> = mutableStateOf(null)
 
     fun init() {
-        groupListPanel.init(selectedGroup)
+        groupListPanel.init(selectedGroup, true)
         groupPanel.init(selectedGroup)
     }
 

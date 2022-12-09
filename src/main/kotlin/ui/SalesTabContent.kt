@@ -35,10 +35,10 @@ class SalesTabContent @Inject constructor(
 
     fun init(){
         sales.init(selectedClient, selectedGroup)
-        groupListPanel.init(selectedGroup)
+        groupListPanel.init(selectedGroup, false)
         groupPanel.init(selectedGroup)
-        clientListPanel.init(selectedClient)
-        clientPanel.init(selectedClient)
+        clientListPanel.init(selectedClient, false)
+        clientPanel.init(selectedClient, false)
     }
 
     @Composable

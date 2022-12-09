@@ -32,14 +32,14 @@ class View {
         Row(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.9f)){
             list()
         }
+        if(model.showButton.value == true){
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
             Button(shape = CircleShape, onClick = controller::createNewGroup){
                 Text("СОЗДАТЬ")
             }
         }
-
-        // TODO добавить изменение списка после создания группы
         model.newGroupDialog.value?.show()
+        }
     }
 
     @Composable

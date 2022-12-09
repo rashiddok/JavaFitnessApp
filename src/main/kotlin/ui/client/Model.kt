@@ -9,6 +9,8 @@ import ui.subscription.SubscriptionDialog
 import java.time.YearMonth
 
 class Model {
+    var isAdmin = mutableStateOf(false)
+
     lateinit var selectedClient: MutableState<Client?>
 
     var rebalanceDialog = mutableStateOf<RebalanceDialog?>(null)
@@ -30,7 +32,8 @@ class Model {
     val workoutVisitedCount = mutableStateOf(0)
     val workoutCanceledCount = mutableStateOf(0)
 
-    fun init(selectedClient: MutableState<Client?>) {
+    fun init(selectedClient: MutableState<Client?>, userIsAdmin: Boolean) {
         this.selectedClient = selectedClient
+        this.isAdmin.value = userIsAdmin
     }
 }

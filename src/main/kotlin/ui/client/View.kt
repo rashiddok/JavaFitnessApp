@@ -62,17 +62,17 @@ class View {
             }
         }
 
-        Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
-            Button(shape = CircleShape,
-                onClick = controller::showAddClientToGroupDialog
-            ){
-                Text("ДОБАВИТЬ В ГРУППУ")
+        if(model.isAdmin.value){
+            Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+                Button(shape = CircleShape,
+                    onClick = controller::showAddClientToGroupDialog
+                ){
+                    Text("ДОБАВИТЬ В ГРУППУ")
+                }
             }
+            model.subscriptionDialog.value?.show()
         }
-
         model.rebalanceDialog.value?.show()
-
-        model.subscriptionDialog.value?.show()
     }
 
     @Composable

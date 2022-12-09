@@ -19,9 +19,9 @@ class ClientTabContent @Inject constructor(
 ) {
     val selectedClient: MutableState<Client?> = mutableStateOf(null)
 
-    fun init() {
-        clientListPanel.init(selectedClient)
-        clientPanel.init(selectedClient)
+    fun init(isAdmin: Boolean) {
+        clientListPanel.init(selectedClient, isAdmin)
+        clientPanel.init(selectedClient, isAdmin)
     }
 
     @Composable

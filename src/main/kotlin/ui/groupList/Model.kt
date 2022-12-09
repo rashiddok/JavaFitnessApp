@@ -8,13 +8,14 @@ import java.util.*
 
 class Model {
     lateinit var selectedGroup: MutableState<Group?>
-
+    val showButton = mutableStateOf(false)
     val searchPattern = mutableStateOf("")
     val showHiddenGroups = mutableStateOf(false)
     val groupList: MutableState<List<Group>> = mutableStateOf(Collections.emptyList())
     var newGroupDialog: MutableState<NewGroupDialog?> = mutableStateOf(null)
 
-    fun init(selectedClient: MutableState<Group?>) {
+    fun init(selectedClient: MutableState<Group?>, showCreateButton: Boolean) {
         this.selectedGroup = selectedClient
+        this.showButton.value = showCreateButton
     }
 }

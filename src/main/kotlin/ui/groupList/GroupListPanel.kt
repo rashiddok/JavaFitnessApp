@@ -10,8 +10,8 @@ class GroupListPanel @Inject constructor(
     private val controller: Controller,
     private val view: View
 ) {
-    fun init(selectedGroup: MutableState<Group?>) {
-        model.init(selectedGroup)
+    fun init(selectedGroup: MutableState<Group?>, showCreateButton: Boolean) {
+        model.init(selectedGroup, showCreateButton)
         controller.init(model)
         view.init(model, controller)
     }
